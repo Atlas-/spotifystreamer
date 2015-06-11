@@ -16,7 +16,7 @@ import io.poundcode.spotifystreamer.R;
 public abstract class SpotifyStreamActivity extends AppCompatActivity {
 
     @InjectView(R.id.toolbar)
-Toolbar mToolBar;
+    Toolbar mToolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +35,13 @@ Toolbar mToolBar;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_settings) {
+        if (item.getItemId() == R.id.action_settings) {
             //TODO show settings
         }
         return super.onOptionsItemSelected(item);
     }
 
     public abstract int getLayoutId();
+
     public abstract String getViewTitle();
 }
