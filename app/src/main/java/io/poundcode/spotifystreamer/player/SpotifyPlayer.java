@@ -1,12 +1,10 @@
 package io.poundcode.spotifystreamer.player;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 
-import io.poundcode.spotifystreamer.base.SpotifyStreamActivity;
 import io.poundcode.spotifystreamer.R;
+import io.poundcode.spotifystreamer.base.SpotifyStreamActivity;
 
 public class SpotifyPlayer extends SpotifyStreamActivity {
 
@@ -15,7 +13,6 @@ public class SpotifyPlayer extends SpotifyStreamActivity {
         super.onCreate(savedInstanceState);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         }
     }
 
