@@ -1,7 +1,7 @@
 package io.poundcode.spotifystreamer.searching.presenter;
 
 import io.poundcode.spotifystreamer.searching.view.SpotifySearchView;
-import io.poundcode.spotifystreamer.spotifyapi.SpotifyApiWrapper;
+import io.poundcode.spotifystreamer.spotifyapi.SpotifyServiceWrapper;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -20,7 +20,7 @@ public class SpotifyArtistSearchPresenter implements SpotifySearchPresenter {
 
     @Override
     public void search(String query) {
-        SpotifyApiWrapper.getNewService().searchArtists(query, new Callback<ArtistsPager>() {
+        SpotifyServiceWrapper.getNewService().searchArtists(query, new Callback<ArtistsPager>() {
             @Override
             public void success(ArtistsPager artistsPager, Response response) {
                 if (artistsPager.artists.items.size() <= 0) {
