@@ -7,4 +7,5 @@
     <string name="title_activity_spotify_player">SpotifyPlayer</string>
     <string name="search_title">Search</string>
     <string name="search_hint">Find An Artist</string>
+    <string name="artist_image_cont_description">artist_image</string>
 </resources>

@@ -4,12 +4,15 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 
+import butterknife.InjectView;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyStreamActivity;
 import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenter;
@@ -18,12 +21,24 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager> {
     private SpotifyArtistSearchPresenter presenter;
+    private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
     SearchView mSearchView;
     MenuItem mSearch;
+    @InjectView(R.id.search_results)
+    RecyclerView mSearchResultsRecyclerView;
+
+    // TODO: 6/14/2015 Show loading
+    // TODO: 6/14/2015 show errors and no results
+    // TODO: 6/14/2015  on click handlers
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new SpotifyArtistSearchPresenter(this);
+        mSearchResultsRecyclerView.setHasFixedSize(true);
+        mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mArtistsPagerAdapter = new SpotifyArtistPagerAdapter();
+        mSearchResultsRecyclerView.setAdapter(mArtistsPagerAdapter);
     }
 
     @Override
@@ -90,8 +105,15 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
     }
 
     @Override
-    public void populate(ArtistsPager results) {
-        //TODO update ui
-        Log.d(SpotifySearchActivity.class.getSimpleName(), "Found Artists Count: "+results.artists.items.size());
+    public void populate(final ArtistsPager results) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //TODO update ui
+                mArtistsPagerAdapter.setResults(results.artists.items);
+                Log.d(SpotifySearchActivity.class.getSimpleName(), "Found Artists Count: "+results.artists.items.size());
+            }
+        });
+
     }
 }

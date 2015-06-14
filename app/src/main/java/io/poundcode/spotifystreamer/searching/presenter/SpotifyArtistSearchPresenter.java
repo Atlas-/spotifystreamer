@@ -20,6 +20,7 @@ public class SpotifyArtistSearchPresenter implements SpotifySearchPresenter {
 
     @Override
     public void search(String query) {
+
         SpotifyServiceWrapper.getNewService().searchArtists(query, new Callback<ArtistsPager>() {
             @Override
             public void success(ArtistsPager artistsPager, Response response) {
