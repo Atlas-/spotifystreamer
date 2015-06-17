@@ -1,4 +1,4 @@
-package io.poundcode.spotifystreamer.searching;
+package io.poundcode.spotifystreamer.toptracks;
 
 import android.content.Context;
 import android.net.Uri;
@@ -18,24 +18,23 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
-import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.ArtistsPager;
+import kaaes.spotify.webapi.android.models.Track;
 
 /**
- * Created by Atlas on 6/14/2015.
+ * Created by Atlas on 6/16/2015.
  */
-// TODO: 6/16/2015 Make this generic for any spotify model?
-public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtistPagerAdapter.ViewHolder> {
+public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTracksPagerAdapter.ViewHolder> {
 
-    private List<Artist> mResults = new ArrayList<>();
+    private List<Track> mResults = new ArrayList<>();
     private final ListItemClickListener listener;
 
-    public SpotifyArtistPagerAdapter(ListItemClickListener listener) {
+    public SpotifyTracksPagerAdapter(ListItemClickListener listener) {
         this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // TODO: 6/16/2015 new row
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist, parent, false);
         ViewHolder vh = new ViewHolder(view);
         return vh;
@@ -43,23 +42,23 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Context context = holder.artistImage.getContext();
-        Artist artist = mResults.get(position);
-        if(artist.images != null && artist.images.size() > 0) {
-            Uri uri = Uri.parse(artist.images.get(0).url);
-            holder.artist.setText(artist.name);
+        Context context = holder.trackImage.getContext();
+        Track track = mResults.get(position);
+        if (track.album.images != null && track.album.images.size() > 0) {
+            Uri uri = Uri.parse(track.album.images.get(0).url);
+            holder.track.setText(track.name);
             Picasso.with(context)
                 .load(uri)
                 .resize(100, 100)
                 .centerCrop()
                 .placeholder(R.drawable.spotify_logo)
-                .into(holder.artistImage);
+                .into(holder.trackImage);
         }
     }
 
     @Override
     public int getItemCount() {
-        if(mResults == null){
+        if (mResults == null) {
             return 0;
         }
         return mResults.size();
@@ -67,24 +66,23 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @InjectView(R.id.artist_image)
-        ImageView artistImage;
+        ImageView trackImage;
         @InjectView(R.id.artist)
-        TextView artist;
+        TextView track;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
-            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            String artist = mResults.get(getAdapterPosition()).id;
+            String artist = this.track.getText().toString();
             listener.onItemClick(artist);
         }
     }
 
-    public void setResults(List<Artist> mResults) {
+    public void setResults(List<Track> mResults) {
         this.mResults = mResults;
         notifyDataSetChanged();
     }

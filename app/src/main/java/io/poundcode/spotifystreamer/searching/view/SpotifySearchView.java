@@ -5,7 +5,6 @@ package io.poundcode.spotifystreamer.searching.view;
  */
 public interface SpotifySearchView<T> {
     void search(String query);
-    void onClickedSearch();
     void onEmptyResults();
     void onError(String message);
     void populate(T results);
