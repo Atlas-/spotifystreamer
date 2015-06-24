@@ -22,8 +22,8 @@ public abstract class SpotifyStreamActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-        setTitle(getViewTitle());
         ButterKnife.inject(this);
+        setTitle(getViewTitle());
         setSupportActionBar(mToolBar);
     }
 
