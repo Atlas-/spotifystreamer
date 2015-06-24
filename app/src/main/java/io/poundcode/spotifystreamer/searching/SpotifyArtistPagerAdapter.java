@@ -65,6 +65,10 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
         return mResults.size();
     }
 
+    public ArrayList<Artist> getData() {
+        return (ArrayList<Artist>) mResults;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @InjectView(R.id.artist_image)
         ImageView artistImage;

@@ -24,7 +24,7 @@ public class SpotifyArtistSearchPresenter implements SpotifySearchPresenter {
         SpotifyServiceWrapper.getNewService().searchArtists(query, new Callback<ArtistsPager>() {
             @Override
             public void success(ArtistsPager artistsPager, Response response) {
-                if (artistsPager.artists.items.size() <= 0) {
+                if (artistsPager.artists.items.size() <= 0 && view.isAlive()) {
                     view.onEmptyResults();
                 } else {
                     view.populate(artistsPager);
@@ -34,8 +34,11 @@ public class SpotifyArtistSearchPresenter implements SpotifySearchPresenter {
             @Override
             public void failure(RetrofitError error) {
                 //todo handle messages
-                view.onError("");
+                if(view.isAlive()) {
+                    view.onError("");
+                }
             }
         });
     }
+
 }

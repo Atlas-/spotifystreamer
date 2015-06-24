@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
+
+import java.util.ArrayList;
 
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.Constants;
@@ -20,15 +23,21 @@ import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
 import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenter;
 import io.poundcode.spotifystreamer.searching.view.SpotifySearchView;
 import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksActivity;
+import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager>, ListItemClickListener {
+    public static final String RESULTS = "results";
+    public static final String QUERY = "query";
     private SpotifyArtistSearchPresenter mPresenter;
     private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
     private SearchView mSearchView;
+    private boolean isAlive = true;
     MenuItem mSearch;
     @InjectView(R.id.search_results)
     RecyclerView mSearchResultsRecyclerView;
+    ArrayList<Artist> artists;
+    String query;
 
     // TODO: 6/14/2015 Show loading
     // TODO: 6/14/2015 show errors and no results
@@ -41,6 +50,18 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
         mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mArtistsPagerAdapter = new SpotifyArtistPagerAdapter(this);
         mSearchResultsRecyclerView.setAdapter(mArtistsPagerAdapter);
+        if (savedInstanceState != null) {
+            artists = (ArrayList<Artist>) savedInstanceState.getSerializable(RESULTS);
+            query = savedInstanceState.getString(QUERY, null);
+        }
+    }
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isAlive = true;
     }
 
     @Override
@@ -50,8 +71,18 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearch = menu.findItem(R.id.search);
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        mSearchView.setIconified(false);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(true);
+        mSearchView.setIconified(true);
+        if (artists != null && query != null && !query.isEmpty()) {
+            mArtistsPagerAdapter.setResults(artists);
+            mSearchView.setQuery(query, false);
+            mSearchView.setIconifiedByDefault(false);
+        } else if (query != null && !query.isEmpty()) {
+            mSearchView.setQuery(query, true);
+            mSearchView.setIconifiedByDefault(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -92,6 +123,13 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+//        outState.putSerializable(RESULTS, mArtistsPagerAdapter.getData());
+        outState.putString(QUERY, mSearchView.getQuery().toString());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onEmptyResults() {
 
     }
@@ -111,6 +149,17 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
             }
         });
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isAlive = false;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return isAlive;
     }
 
     @Override
