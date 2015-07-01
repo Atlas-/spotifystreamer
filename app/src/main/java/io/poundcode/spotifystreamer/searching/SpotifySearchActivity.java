@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,15 +28,15 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager>, ListItemClickListener {
     public static final String RESULTS = "results";
     public static final String QUERY = "query";
-    private SpotifyArtistSearchPresenter mPresenter;
-    private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
-    private SearchView mSearchView;
-    private boolean isAlive = true;
     MenuItem mSearch;
     @InjectView(R.id.search_results)
     RecyclerView mSearchResultsRecyclerView;
     ArrayList<Artist> artists;
     String query;
+    private SpotifyArtistSearchPresenter mPresenter;
+    private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
+    private SearchView mSearchView;
+    private boolean isAlive = true;
 
     // TODO: 6/14/2015 Show loading
     // TODO: 6/14/2015 show errors and no results
@@ -51,12 +50,15 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
         mArtistsPagerAdapter = new SpotifyArtistPagerAdapter(this);
         mSearchResultsRecyclerView.setAdapter(mArtistsPagerAdapter);
         if (savedInstanceState != null) {
-            artists = (ArrayList<Artist>) savedInstanceState.getSerializable(RESULTS);
+            artists = (ArrayList) getLastCustomNonConfigurationInstance();
             query = savedInstanceState.getString(QUERY, null);
         }
     }
 
-
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return mArtistsPagerAdapter.getData();
+    }
 
     @Override
     protected void onStart() {
@@ -74,12 +76,11 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(true);
         mSearchView.setIconified(true);
-        if (artists != null && query != null && !query.isEmpty()) {
+        if (artists != null) {
             mArtistsPagerAdapter.setResults(artists);
+        }
+        if (query != null && !query.isEmpty()) {
             mSearchView.setQuery(query, false);
-            mSearchView.setIconifiedByDefault(false);
-        } else if (query != null && !query.isEmpty()) {
-            mSearchView.setQuery(query, true);
             mSearchView.setIconifiedByDefault(false);
         }
 
@@ -116,7 +117,6 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            mSearch.collapseActionView(); //maybe don't do this
             String query = intent.getStringExtra(SearchManager.QUERY);
             search(query);
         }
@@ -124,7 +124,6 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-//        outState.putSerializable(RESULTS, mArtistsPagerAdapter.getData());
         outState.putString(QUERY, mSearchView.getQuery().toString());
         super.onSaveInstanceState(outState);
     }
@@ -165,7 +164,6 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
     @Override
     public void onItemClick(String artist) {
         //Load next view
-        //TODO should this be done by the presenter?
         Intent intent = new Intent(this, SpotifyArtistsTopTracksActivity.class);
         intent.putExtra(Constants.ARTIST, artist);
         startActivity(intent);
