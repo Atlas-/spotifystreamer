@@ -25,8 +25,8 @@ import kaaes.spotify.webapi.android.models.Track;
  */
 public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTracksPagerAdapter.ViewHolder> {
 
-    private List<Track> mResults = new ArrayList<>();
     private final ListItemClickListener listener;
+    private ArrayList<Track> mResults = new ArrayList<>();
 
     public SpotifyTracksPagerAdapter(ListItemClickListener listener) {
         this.listener = listener;
@@ -38,6 +38,10 @@ public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTrack
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist, parent, false);
         ViewHolder vh = new ViewHolder(view);
         return vh;
+    }
+
+    public ArrayList<Track> getData() {
+        return mResults;
     }
 
     @Override
@@ -64,6 +68,11 @@ public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTrack
         return mResults.size();
     }
 
+    public void setResults(List<Track> mResults) {
+        this.mResults = (ArrayList<Track>) mResults;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @InjectView(R.id.artist_image)
         ImageView trackImage;
@@ -80,10 +89,5 @@ public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTrack
             String artist = this.track.getText().toString();
             listener.onItemClick(artist);
         }
-    }
-
-    public void setResults(List<Track> mResults) {
-        this.mResults = mResults;
-        notifyDataSetChanged();
     }
 }

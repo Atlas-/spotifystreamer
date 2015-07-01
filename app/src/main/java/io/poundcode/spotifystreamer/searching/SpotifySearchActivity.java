@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 
+import java.util.ArrayList;
+
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
@@ -20,15 +22,21 @@ import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
 import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenter;
 import io.poundcode.spotifystreamer.searching.view.SpotifySearchView;
 import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksActivity;
+import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager>, ListItemClickListener {
-    private SpotifyArtistSearchPresenter mPresenter;
-    private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
-    private SearchView mSearchView;
+    public static final String RESULTS = "results";
+    public static final String QUERY = "query";
     MenuItem mSearch;
     @InjectView(R.id.search_results)
     RecyclerView mSearchResultsRecyclerView;
+    ArrayList<Artist> artists;
+    String query;
+    private SpotifyArtistSearchPresenter mPresenter;
+    private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
+    private SearchView mSearchView;
+    private boolean isAlive = true;
 
     // TODO: 6/14/2015 Show loading
     // TODO: 6/14/2015 show errors and no results
@@ -41,6 +49,21 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
         mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mArtistsPagerAdapter = new SpotifyArtistPagerAdapter(this);
         mSearchResultsRecyclerView.setAdapter(mArtistsPagerAdapter);
+        if (savedInstanceState != null) {
+            artists = (ArrayList) getLastCustomNonConfigurationInstance();
+            query = savedInstanceState.getString(QUERY, null);
+        }
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return mArtistsPagerAdapter.getData();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isAlive = true;
     }
 
     @Override
@@ -50,8 +73,17 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearch = menu.findItem(R.id.search);
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        mSearchView.setIconified(false);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(true);
+        mSearchView.setIconified(true);
+        if (artists != null) {
+            mArtistsPagerAdapter.setResults(artists);
+        }
+        if (query != null && !query.isEmpty()) {
+            mSearchView.setQuery(query, false);
+            mSearchView.setIconifiedByDefault(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -85,10 +117,15 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            mSearch.collapseActionView(); //maybe don't do this
             String query = intent.getStringExtra(SearchManager.QUERY);
             search(query);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(QUERY, mSearchView.getQuery().toString());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -114,9 +151,19 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        isAlive = false;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    @Override
     public void onItemClick(String artist) {
         //Load next view
-        //TODO should this be done by the presenter?
         Intent intent = new Intent(this, SpotifyArtistsTopTracksActivity.class);
         intent.putExtra(Constants.ARTIST, artist);
         startActivity(intent);
