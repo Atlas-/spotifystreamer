@@ -24,7 +24,7 @@ public class SpotifyArtistSearchPresenter implements SpotifySearchPresenter {
         SpotifyServiceWrapper.getNewService().searchArtists(query, new Callback<ArtistsPager>() {
             @Override
             public void success(ArtistsPager artistsPager, Response response) {
-                if (artistsPager.artists.items.size() <= 0 && view.isAlive()) {
+                if (artistsPager.artists.items.size() <= 0) {
                     view.onEmptyResults();
                 } else {
                     view.populate(artistsPager);

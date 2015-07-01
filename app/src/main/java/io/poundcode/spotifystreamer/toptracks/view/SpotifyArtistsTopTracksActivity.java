@@ -26,7 +26,7 @@ public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity imple
     RecyclerView mSearchResultsRecyclerView;
     private SpotifyArtistsTracksPresenter mPresenter;
     private String mArtist;
-    private SpotifyTracksPagerAdapter mArtistsPagerAdapter;
+    private SpotifyTracksPagerAdapter mTracksPagerAdapter;
     private ArrayList<Track> tracks;
 
     @Override
@@ -37,13 +37,17 @@ public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity imple
         mPresenter.loadTopTracks(mArtist);
         mSearchResultsRecyclerView.setHasFixedSize(true);
         mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mArtistsPagerAdapter = new SpotifyTracksPagerAdapter(this);
-        mSearchResultsRecyclerView.setAdapter(mArtistsPagerAdapter);
+        mTracksPagerAdapter = new SpotifyTracksPagerAdapter(this);
+        mSearchResultsRecyclerView.setAdapter(mTracksPagerAdapter);
+        tracks = (ArrayList<Track>) getLastCustomNonConfigurationInstance();
+        if (tracks != null) {
+            mTracksPagerAdapter.setResults(tracks);
+        }
     }
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        return mArtistsPagerAdapter.getData();
+        return mTracksPagerAdapter.getData();
     }
 
 
@@ -62,7 +66,7 @@ public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity imple
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mArtistsPagerAdapter.setResults(tracks.tracks);
+                mTracksPagerAdapter.setResults(tracks.tracks);
             }
         });
     }

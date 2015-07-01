@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,6 @@ import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager>, ListItemClickListener {
-    public static final String RESULTS = "results";
     public static final String QUERY = "query";
     MenuItem mSearch;
     @InjectView(R.id.search_results)
@@ -130,7 +130,12 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
 
     @Override
     public void onEmptyResults() {
-
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(SpotifySearchActivity.this, getResources().getString(R.string.no_results, mSearchView.getQuery().toString()), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

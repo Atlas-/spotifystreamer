@@ -9,4 +9,5 @@
     <string name="search_hint">Find An Artist</string>
     <string name="artist_image_cont_description">artist_image</string>
     <string name="top_tracks">Top Tracks</string>
+    <string name="no_results">No results found for %s. Please refine your search</string>
 </resources>

@@ -44,6 +44,12 @@ public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTrack
         return mResults;
     }
 
+
+    public void setResults(List<Track> mResults) {
+        this.mResults = (ArrayList<Track>) mResults;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Context context = holder.trackImage.getContext();
@@ -66,11 +72,6 @@ public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTrack
             return 0;
         }
         return mResults.size();
-    }
-
-    public void setResults(List<Track> mResults) {
-        this.mResults = (ArrayList<Track>) mResults;
-        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
