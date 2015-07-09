@@ -72,12 +72,12 @@ public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity imple
     }
 
     @Override
-    public void showError() {
+    public void showError(String message) {
 
     }
 
     @Override
-    public void showLoading() {
+    public void showLoading(boolean isLoading) {
 
     }
 

@@ -7,7 +7,9 @@ import kaaes.spotify.webapi.android.models.Tracks;
  */
 public interface SpotifyArtistsTopTracksView {
     void showData(Tracks tracks);
-    void showError();
-    void showLoading();
+
+    void showError(String message);
+
+    void showLoading(boolean isLoading);
     void onSongClicked();
 }

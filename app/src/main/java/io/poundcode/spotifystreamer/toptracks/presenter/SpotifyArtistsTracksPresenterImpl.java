@@ -20,6 +20,7 @@ public class SpotifyArtistsTracksPresenterImpl implements SpotifyArtistsTracksPr
 
     public SpotifyArtistsTracksPresenterImpl(SpotifyArtistsTopTracksView mView) {
         this.mView = mView;
+        // TODO: 7/8/2015 allow user to set locale and pull from android
         params.put("country", "US");
     }
 
@@ -33,7 +34,7 @@ public class SpotifyArtistsTracksPresenterImpl implements SpotifyArtistsTracksPr
 
             @Override
             public void failure(RetrofitError error) {
-                mView.showError();
+                mView.showError(error.getMessage());
             }
         });
     }
