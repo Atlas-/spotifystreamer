@@ -66,6 +66,11 @@ public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTrack
         }
     }
 
+    public void clear() {
+        mResults.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         if (mResults == null) {

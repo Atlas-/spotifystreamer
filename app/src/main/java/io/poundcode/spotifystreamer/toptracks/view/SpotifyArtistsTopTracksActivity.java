@@ -3,6 +3,9 @@ package io.poundcode.spotifystreamer.toptracks.view;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -22,8 +25,10 @@ import kaaes.spotify.webapi.android.models.Tracks;
  */
 public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity implements SpotifyArtistsTopTracksView, ListItemClickListener {
 
-    @InjectView(R.id.search_results)
-    RecyclerView mSearchResultsRecyclerView;
+    @InjectView(R.id.results)
+    RecyclerView mTopTracksResultsRecyclerView;
+    @InjectView(R.id.error)
+    TextView mErrorMessage;
     private SpotifyArtistsTracksPresenter mPresenter;
     private String mArtist;
     private SpotifyTracksPagerAdapter mTracksPagerAdapter;
@@ -34,14 +39,15 @@ public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity imple
         super.onCreate(savedInstanceState);
         mPresenter = new SpotifyArtistsTracksPresenterImpl(this);
         mArtist = getIntent().getStringExtra(Constants.ARTIST);
-        mPresenter.loadTopTracks(mArtist);
-        mSearchResultsRecyclerView.setHasFixedSize(true);
-        mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mTopTracksResultsRecyclerView.setHasFixedSize(true);
+        mTopTracksResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mTracksPagerAdapter = new SpotifyTracksPagerAdapter(this);
-        mSearchResultsRecyclerView.setAdapter(mTracksPagerAdapter);
+        mTopTracksResultsRecyclerView.setAdapter(mTracksPagerAdapter);
         tracks = (ArrayList<Track>) getLastCustomNonConfigurationInstance();
         if (tracks != null) {
             mTracksPagerAdapter.setResults(tracks);
+        } else {
+            mPresenter.loadTopTracks(mArtist);
         }
     }
 
@@ -62,28 +68,50 @@ public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity imple
     }
 
     @Override
-    public void showData(final Tracks tracks) {
+    public void render(final Tracks tracks) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (mErrorMessage.getVisibility() == View.VISIBLE) {
+                    mErrorMessage.setVisibility(View.GONE);
+                    mTopTracksResultsRecyclerView.setVisibility(View.VISIBLE);
+                }
                 mTracksPagerAdapter.setResults(tracks.tracks);
             }
         });
     }
 
     @Override
-    public void showError(String message) {
+    public void onError(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTopTracksResultsRecyclerView.setVisibility(View.GONE);
+                mErrorMessage.setVisibility(View.VISIBLE);
+                mErrorMessage.setText(message);
+                mTracksPagerAdapter.clear();
+            }
+        });
+    }
 
+    @Override
+    public void onEmptyResults() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(SpotifyArtistsTopTracksActivity.this, getResources().getString(R.string.no_top_tracks), Toast.LENGTH_SHORT).show();
+                if (mErrorMessage.getVisibility() == View.VISIBLE) {
+                    mErrorMessage.setVisibility(View.GONE);
+                    mTopTracksResultsRecyclerView.setVisibility(View.VISIBLE);
+                }
+                finish();
+            }
+        });
     }
 
     @Override
     public void showLoading(boolean isLoading) {
 
-    }
-
-    @Override
-    public void onSongClicked() {
-        // TODO: 6/30/2015 implement
     }
 
     @Override

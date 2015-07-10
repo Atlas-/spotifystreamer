@@ -6,10 +6,10 @@ import kaaes.spotify.webapi.android.models.Tracks;
  * Created by Atlas on 6/13/2015.
  */
 public interface SpotifyArtistsTopTracksView {
-    void showData(Tracks tracks);
+    void render(Tracks tracks);
 
-    void showError(String message);
+    void onError(String message);
 
+    void onEmptyResults();
     void showLoading(boolean isLoading);
-    void onSongClicked();
 }

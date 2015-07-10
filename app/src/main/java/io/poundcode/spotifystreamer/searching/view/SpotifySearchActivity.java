@@ -1,4 +1,4 @@
-package io.poundcode.spotifystreamer.searching;
+package io.poundcode.spotifystreamer.searching.view;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -22,8 +22,8 @@ import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyStreamActivity;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
-import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenter;
-import io.poundcode.spotifystreamer.searching.view.SpotifySearchView;
+import io.poundcode.spotifystreamer.searching.SpotifyArtistPagerAdapter;
+import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenterImpl;
 import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksActivity;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
@@ -31,13 +31,13 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager>, ListItemClickListener {
     public static final String QUERY = "query";
     MenuItem mSearch;
-    @InjectView(R.id.search_results)
+    @InjectView(R.id.results)
     RecyclerView mSearchResultsRecyclerView;
     @InjectView(R.id.error)
     TextView mErrorMessage;
     ArrayList<Artist> artists;
     String query;
-    private SpotifyArtistSearchPresenter mPresenter;
+    private SpotifyArtistSearchPresenterImpl mPresenter;
     private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
     private SearchView mSearchView;
     private boolean isAlive = true;
@@ -48,7 +48,7 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new SpotifyArtistSearchPresenter(this);
+        mPresenter = new SpotifyArtistSearchPresenterImpl(this);
         mSearchResultsRecyclerView.setHasFixedSize(true);
         mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mArtistsPagerAdapter = new SpotifyArtistPagerAdapter(this);
@@ -139,6 +139,10 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (mErrorMessage.getVisibility() == View.VISIBLE) {
+                    mErrorMessage.setVisibility(View.GONE);
+                    mSearchResultsRecyclerView.setVisibility(View.VISIBLE);
+                }
                 Toast.makeText(SpotifySearchActivity.this, getResources().getString(R.string.no_results, mSearchView.getQuery().toString()), Toast.LENGTH_SHORT).show();
             }
         });
@@ -152,6 +156,7 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
                 mSearchResultsRecyclerView.setVisibility(View.GONE);
                 mErrorMessage.setVisibility(View.VISIBLE);
                 mErrorMessage.setText(message);
+                mArtistsPagerAdapter.clear();
             }
         });
 

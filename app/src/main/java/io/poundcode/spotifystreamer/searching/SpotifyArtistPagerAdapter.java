@@ -19,7 +19,6 @@ import butterknife.InjectView;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
 import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 /**
  * Created by Atlas on 6/14/2015.
@@ -27,8 +26,8 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 // TODO: 6/16/2015 Make this generic for any spotify model?
 public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtistPagerAdapter.ViewHolder> {
 
-    private List<Artist> mResults = new ArrayList<>();
     private final ListItemClickListener listener;
+    private List<Artist> mResults = new ArrayList<>();
 
     public SpotifyArtistPagerAdapter(ListItemClickListener listener) {
         this.listener = listener;
@@ -69,6 +68,16 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
         return (ArrayList<Artist>) mResults;
     }
 
+    public void clear() {
+        mResults.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setResults(List<Artist> mResults) {
+        this.mResults = mResults;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @InjectView(R.id.artist_image)
         ImageView artistImage;
@@ -86,10 +95,5 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
             String artist = mResults.get(getAdapterPosition()).id;
             listener.onItemClick(artist);
         }
-    }
-
-    public void setResults(List<Artist> mResults) {
-        this.mResults = mResults;
-        notifyDataSetChanged();
     }
 }
