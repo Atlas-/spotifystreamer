@@ -7,6 +7,6 @@ public interface SpotifySearchView<T> {
     void search(String query);
     void onEmptyResults();
     void onError(String message);
-    void populate(T results);
+    void render(T results);
     boolean isAlive();
 }

@@ -1,4 +1,4 @@
-package io.poundcode.spotifystreamer.searching;
+package io.poundcode.spotifystreamer.searching.view;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -9,8 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -19,32 +22,33 @@ import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyStreamActivity;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
-import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenter;
-import io.poundcode.spotifystreamer.searching.view.SpotifySearchView;
+import io.poundcode.spotifystreamer.searching.SpotifyArtistPagerAdapter;
+import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenterImpl;
 import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksActivity;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager>, ListItemClickListener {
-    public static final String RESULTS = "results";
     public static final String QUERY = "query";
     MenuItem mSearch;
-    @InjectView(R.id.search_results)
+    @InjectView(R.id.results)
     RecyclerView mSearchResultsRecyclerView;
+    @InjectView(R.id.error)
+    TextView mErrorMessage;
     ArrayList<Artist> artists;
     String query;
-    private SpotifyArtistSearchPresenter mPresenter;
+    private SpotifyArtistSearchPresenterImpl mPresenter;
     private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
     private SearchView mSearchView;
     private boolean isAlive = true;
 
     // TODO: 6/14/2015 Show loading
-    // TODO: 6/14/2015 show errors and no results
+    // TODO: 6/14/2015 show errors
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new SpotifyArtistSearchPresenter(this);
+        mPresenter = new SpotifyArtistSearchPresenterImpl(this);
         mSearchResultsRecyclerView.setHasFixedSize(true);
         mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mArtistsPagerAdapter = new SpotifyArtistPagerAdapter(this);
@@ -124,25 +128,49 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(QUERY, mSearchView.getQuery().toString());
+        if (mSearchView != null && mSearchView.getQuery() != null) {
+            outState.putString(QUERY, mSearchView.getQuery().toString());
+        }
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onEmptyResults() {
-
-    }
-
-    @Override
-    public void onError(String message) {
-
-    }
-
-    @Override
-    public void populate(final ArtistsPager results) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (mErrorMessage.getVisibility() == View.VISIBLE) {
+                    mErrorMessage.setVisibility(View.GONE);
+                    mSearchResultsRecyclerView.setVisibility(View.VISIBLE);
+                }
+                Toast.makeText(SpotifySearchActivity.this, getResources().getString(R.string.no_results, mSearchView.getQuery().toString()), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onError(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSearchResultsRecyclerView.setVisibility(View.GONE);
+                mErrorMessage.setVisibility(View.VISIBLE);
+                mErrorMessage.setText(message);
+                mArtistsPagerAdapter.clear();
+            }
+        });
+
+    }
+
+    @Override
+    public void render(final ArtistsPager results) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mErrorMessage.getVisibility() == View.VISIBLE) {
+                    mErrorMessage.setVisibility(View.GONE);
+                    mSearchResultsRecyclerView.setVisibility(View.VISIBLE);
+                }
                 mArtistsPagerAdapter.setResults(results.artists.items);
                 Log.d(SpotifySearchActivity.class.getSimpleName(), "Found Artists Count: " + results.artists.items.size());
             }
