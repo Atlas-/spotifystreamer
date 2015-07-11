@@ -17,7 +17,6 @@ public class SpotifyServiceWrapper {
     public static SpotifyService getNewService() {
         if(mSpotifyApi == null) {
             mSpotifyApi = new SpotifyApi();
-//            mSpotifyApi.setAccessToken("");
         }
         return mSpotifyApi.getService();
     }
