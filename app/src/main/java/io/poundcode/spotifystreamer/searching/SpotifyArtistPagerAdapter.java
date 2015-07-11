@@ -41,12 +41,13 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Context context = holder.artistImage.getContext();
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         Artist artist = mResults.get(position);
+        Context context = holder.artistImage.getContext();
+        holder.artist.setText(artist.name);
+        holder.artistImage.setImageResource(R.drawable.spotify_logo);
         if(artist.images != null && artist.images.size() > 0) {
             Uri uri = Uri.parse(artist.images.get(0).url);
-            holder.artist.setText(artist.name);
             Picasso.with(context)
                 .load(uri)
                 .resize(100, 100)

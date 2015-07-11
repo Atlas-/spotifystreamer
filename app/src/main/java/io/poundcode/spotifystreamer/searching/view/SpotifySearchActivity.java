@@ -28,7 +28,7 @@ import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksActivi
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
-public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager>, ListItemClickListener {
+public class SpotifySearchActivity extends SpotifyStreamActivity implements SpotifySearchView<ArtistsPager>, ListItemClickListener, SearchView.OnQueryTextListener {
     public static final String QUERY = "query";
     MenuItem mSearch;
     @InjectView(R.id.results)
@@ -72,11 +72,11 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //TODO keyboard flow
         getMenuInflater().inflate(R.menu.menu_search, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearch = menu.findItem(R.id.search);
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setOnQueryTextListener(this);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.setIconifiedByDefault(true);
         mSearchView.setIconified(true);
@@ -171,6 +171,7 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
                     mErrorMessage.setVisibility(View.GONE);
                     mSearchResultsRecyclerView.setVisibility(View.VISIBLE);
                 }
+                mArtistsPagerAdapter.clear();
                 mArtistsPagerAdapter.setResults(results.artists.items);
                 Log.d(SpotifySearchActivity.class.getSimpleName(), "Found Artists Count: " + results.artists.items.size());
             }
@@ -195,5 +196,20 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements Spot
         Intent intent = new Intent(this, SpotifyArtistsTopTracksActivity.class);
         intent.putExtra(Constants.ARTIST, artist);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        mSearchView.clearFocus();
+        if (mPresenter.isSearching) {
+            return true;
+        }
+        mPresenter.isSearching = true;
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }

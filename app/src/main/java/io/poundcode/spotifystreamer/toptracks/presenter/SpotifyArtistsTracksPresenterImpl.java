@@ -37,7 +37,7 @@ public class SpotifyArtistsTracksPresenterImpl implements SpotifyArtistsTracksPr
                 @Override
                 public void success(Tracks tracks, Response response) {
                     if (tracks.tracks.isEmpty()) {
-                        mView.onError("No top tracks");
+                        mView.onEmptyResults();
                     }
                     mView.render(tracks);
                 }

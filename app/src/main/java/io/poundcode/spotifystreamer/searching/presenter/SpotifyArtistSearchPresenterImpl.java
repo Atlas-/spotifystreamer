@@ -17,6 +17,7 @@ import static io.poundcode.spotifystreamer.utils.Utils.isNetworkConnected;
  */
 public class SpotifyArtistSearchPresenterImpl implements SpotifySearchPresenter {
 
+    public boolean isSearching = false;
     SpotifySearchView<ArtistsPager> mView;
 
     public SpotifyArtistSearchPresenterImpl(SpotifySearchView<ArtistsPager> view) {
@@ -25,11 +26,11 @@ public class SpotifyArtistSearchPresenterImpl implements SpotifySearchPresenter 
 
     @Override
     public void search(String query) {
-
         if (isNetworkConnected((Context) mView)) {
             SpotifyServiceWrapper.getNewService().searchArtists(query, new Callback<ArtistsPager>() {
                 @Override
                 public void success(ArtistsPager artistsPager, Response response) {
+                    isSearching = false;
                     if (artistsPager.artists.items.size() <= 0) {
                         mView.onEmptyResults();
                     } else {
@@ -39,10 +40,12 @@ public class SpotifyArtistSearchPresenterImpl implements SpotifySearchPresenter 
 
                 @Override
                 public void failure(RetrofitError error) {
+                    isSearching = false;
                     mView.onError(((Context) mView).getResources().getString(R.string.error_general));
                 }
             });
         } else {
+            isSearching = false;
             mView.onError(((Context) mView).getResources().getString(R.string.error_no_internet_connection));
         }
 
