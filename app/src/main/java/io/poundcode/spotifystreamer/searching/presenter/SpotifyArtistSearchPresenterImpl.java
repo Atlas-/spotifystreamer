@@ -19,16 +19,16 @@ public class SpotifyArtistSearchPresenterImpl implements SpotifySearchPresenter 
 
     public boolean isSearching = false;
     SpotifySearchView<ArtistsPager> mView;
-    Context context;
+    Context mContext;
 
     public SpotifyArtistSearchPresenterImpl(SpotifySearchView<ArtistsPager> view, Context context) {
-        this.context = context;
+        this.mContext = context;
         this.mView = view;
     }
 
     @Override
     public void search(String query) {
-        if (isNetworkConnected(context)) {
+        if (isNetworkConnected(mContext)) {
             SpotifyServiceWrapper.getNewService().searchArtists(query, new Callback<ArtistsPager>() {
                 @Override
                 public void success(ArtistsPager artistsPager, Response response) {

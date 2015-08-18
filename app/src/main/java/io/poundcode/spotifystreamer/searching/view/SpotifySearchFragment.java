@@ -2,7 +2,6 @@ package io.poundcode.spotifystreamer.searching.view;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,20 +17,18 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import butterknife.InjectView;
-import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
-import io.poundcode.spotifystreamer.base.SpotifyStreamFragment;
+import io.poundcode.spotifystreamer.base.SpotifyFragment;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
 import io.poundcode.spotifystreamer.searching.SpotifyArtistPagerAdapter;
 import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenterImpl;
-import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksActivity;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 /**
  * Created by Atlas on 8/17/2015.
  */
-public class SpotifySearchFragment extends SpotifyStreamFragment implements SpotifySearchView<ArtistsPager>, ListItemClickListener, SearchView.OnQueryTextListener {
+public class SpotifySearchFragment extends SpotifyFragment implements SpotifySearchView<ArtistsPager>, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.results)
     RecyclerView mSearchResultsRecyclerView;
@@ -44,6 +41,10 @@ public class SpotifySearchFragment extends SpotifyStreamFragment implements Spot
     private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
     private SearchView mSearchView;
     private boolean isAlive = true;
+
+    public static SpotifySearchFragment getInstance() {
+        return new SpotifySearchFragment();
+    }
 
 //        if (savedInstanceState != null) {
 //            artists = (ArrayList) getLastCustomNonConfigurationInstance();
@@ -63,7 +64,9 @@ public class SpotifySearchFragment extends SpotifyStreamFragment implements Spot
         mPresenter = new SpotifyArtistSearchPresenterImpl(this, getActivity());
         mSearchResultsRecyclerView.setHasFixedSize(true);
         mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mArtistsPagerAdapter = new SpotifyArtistPagerAdapter(this);
+        if (getActivity() instanceof ListItemClickListener) {
+            mArtistsPagerAdapter = new SpotifyArtistPagerAdapter((ListItemClickListener) getActivity());
+        }
         mSearchResultsRecyclerView.setAdapter(mArtistsPagerAdapter);
     }
 
@@ -111,7 +114,7 @@ public class SpotifySearchFragment extends SpotifyStreamFragment implements Spot
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_simple_list;
+        return R.layout.fragment_simple_list;
     }
 
     @Override
@@ -178,14 +181,6 @@ public class SpotifySearchFragment extends SpotifyStreamFragment implements Spot
     @Override
     public boolean isAlive() {
         return isAlive;
-    }
-
-    @Override
-    public void onItemClick(String artist) {
-        //Load next view
-        Intent intent = new Intent(getActivity(), SpotifyArtistsTopTracksActivity.class);
-        intent.putExtra(Constants.ARTIST, artist);
-        startActivity(intent);
     }
 
 }

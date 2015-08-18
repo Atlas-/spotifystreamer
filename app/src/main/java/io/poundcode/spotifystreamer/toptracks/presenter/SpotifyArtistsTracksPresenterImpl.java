@@ -22,17 +22,19 @@ public class SpotifyArtistsTracksPresenterImpl implements SpotifyArtistsTracksPr
 
     public static final String COUNTRY = "country";
     final SpotifyArtistsTopTracksView mView;
+    private final Context mContext;
     private Map<String, Object> params = new HashMap<>();
 
-    public SpotifyArtistsTracksPresenterImpl(SpotifyArtistsTopTracksView mView) {
-        this.mView = mView;
+    public SpotifyArtistsTracksPresenterImpl(SpotifyArtistsTopTracksView view, Context context) {
+        this.mView = view;
+        this.mContext = context;
         // TODO: 7/8/2015 allow user to set locale and pull from android
         params.put(COUNTRY, "US");
     }
 
     @Override
     public void loadTopTracks(String artist) {
-        if (isNetworkConnected((Context) mView)) {
+        if (isNetworkConnected(mContext)) {
             SpotifyServiceWrapper.getNewService().getArtistTopTrack(artist, params, new Callback<Tracks>() {
                 @Override
                 public void success(Tracks tracks, Response response) {

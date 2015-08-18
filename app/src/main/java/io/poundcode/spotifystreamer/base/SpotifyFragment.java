@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Atlas on 8/17/2015.
  */
-public abstract class SpotifyStreamFragment extends Fragment {
+public abstract class SpotifyFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
