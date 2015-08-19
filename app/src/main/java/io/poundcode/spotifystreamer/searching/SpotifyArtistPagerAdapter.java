@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
-import kaaes.spotify.webapi.android.models.Artist;
+import io.poundcode.spotifystreamer.model.SpotifyArtist;
 
 /**
  * Created by Atlas on 6/14/2015.
@@ -27,7 +27,7 @@ import kaaes.spotify.webapi.android.models.Artist;
 public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtistPagerAdapter.ViewHolder> {
 
     private final ListItemClickListener listener;
-    private List<Artist> mResults = new ArrayList<>();
+    private List<SpotifyArtist> mResults = new ArrayList<>();
 
     public SpotifyArtistPagerAdapter(ListItemClickListener listener) {
         this.listener = listener;
@@ -42,31 +42,30 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Artist artist = mResults.get(position);
+        SpotifyArtist artist = mResults.get(position);
         Context context = holder.artistImage.getContext();
         holder.artist.setText(artist.name);
         holder.artistImage.setImageResource(R.drawable.spotify_logo);
-        if(artist.images != null && artist.images.size() > 0) {
-            Uri uri = Uri.parse(artist.images.get(0).url);
-            Picasso.with(context)
-                .load(uri)
-                .resize(100, 100)
-                .centerCrop()
-                .placeholder(R.drawable.spotify_logo)
-                .into(holder.artistImage);
-        }
+        Uri uri = Uri.parse(artist.imageUrl);
+        Picasso.with(context)
+            .load(uri)
+            .resize(100, 100)
+            .centerCrop()
+            .placeholder(R.drawable.spotify_logo)
+            .into(holder.artistImage);
+
     }
 
     @Override
     public int getItemCount() {
-        if(mResults == null){
+        if (mResults == null) {
             return 0;
         }
         return mResults.size();
     }
 
-    public ArrayList<Artist> getData() {
-        return (ArrayList<Artist>) mResults;
+    public ArrayList<SpotifyArtist> getData() {
+        return (ArrayList<SpotifyArtist>) mResults;
     }
 
     public void clear() {
@@ -74,7 +73,7 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
         notifyDataSetChanged();
     }
 
-    public void setResults(List<Artist> mResults) {
+    public void setResults(List<SpotifyArtist> mResults) {
         this.mResults = mResults;
         notifyDataSetChanged();
     }

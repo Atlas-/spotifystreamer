@@ -50,6 +50,11 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements List
 
 
     @Override
+    public Object getLastCustomNonConfigurationInstance() {
+        return super.getLastCustomNonConfigurationInstance();
+    }
+
+    @Override
     public void onItemClick(String artist) {
         //Load next view
         if (isMultiPane) {

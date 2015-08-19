@@ -18,7 +18,7 @@ public abstract class SpotifyFragment extends Fragment {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(getViewTitle());
         setHasOptionsMenu(true);
-        setRetainInstance(true);
+//        setRetainInstance(true);
     }
 
     @Override
