@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
-import kaaes.spotify.webapi.android.models.Track;
+import io.poundcode.spotifystreamer.model.SpotifyTrack;
 
 /**
  * Created by Atlas on 6/16/2015.
@@ -26,7 +26,7 @@ import kaaes.spotify.webapi.android.models.Track;
 public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTracksPagerAdapter.ViewHolder> {
 
     private final ListItemClickListener listener;
-    private ArrayList<Track> mResults = new ArrayList<>();
+    private ArrayList<SpotifyTrack> mResults = new ArrayList<>();
 
     public SpotifyTracksPagerAdapter(ListItemClickListener listener) {
         this.listener = listener;
@@ -34,36 +34,34 @@ public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTrack
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // TODO: 6/16/2015 new row
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist, parent, false);
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
 
-    public ArrayList<Track> getData() {
+    public ArrayList<SpotifyTrack> getData() {
         return mResults;
     }
 
 
-    public void setResults(List<Track> mResults) {
-        this.mResults = (ArrayList<Track>) mResults;
+    public void setResults(List<SpotifyTrack> mResults) {
+        this.mResults = (ArrayList<SpotifyTrack>) mResults;
         notifyDataSetChanged();
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Context context = holder.trackImage.getContext();
-        Track track = mResults.get(position);
-        if (track.album.images != null && track.album.images.size() > 0) {
-            Uri uri = Uri.parse(track.album.images.get(0).url);
-            holder.track.setText(track.name);
-            Picasso.with(context)
-                .load(uri)
-                .resize(100, 100)
-                .centerCrop()
-                .placeholder(R.drawable.spotify_logo)
-                .into(holder.trackImage);
-        }
+        SpotifyTrack track = mResults.get(position);
+        Uri uri = Uri.parse(track.imageUrl);
+        holder.track.setText(track.trackName);
+        Picasso.with(context)
+            .load(uri)
+            .resize(100, 100)
+            .centerCrop()
+            .placeholder(R.drawable.spotify_logo)
+            .into(holder.trackImage);
+
     }
 
     public void clear() {

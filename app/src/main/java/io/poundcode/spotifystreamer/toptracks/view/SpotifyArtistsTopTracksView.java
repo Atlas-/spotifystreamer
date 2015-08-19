@@ -1,12 +1,14 @@
 package io.poundcode.spotifystreamer.toptracks.view;
 
-import kaaes.spotify.webapi.android.models.Tracks;
+import java.util.List;
+
+import io.poundcode.spotifystreamer.model.SpotifyTrack;
 
 /**
  * Created by Atlas on 6/13/2015.
  */
 public interface SpotifyArtistsTopTracksView {
-    void render(Tracks tracks);
+    void render(List<SpotifyTrack> tracks);
 
     void onError(String message);
 
