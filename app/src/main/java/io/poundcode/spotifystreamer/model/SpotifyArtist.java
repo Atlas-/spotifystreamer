@@ -35,6 +35,8 @@ public class SpotifyArtist implements Parcelable {
         this.name = artist.name;
         if (artist.images != null && artist.images.size() > 0 && artist.images.get(0) != null) {
             imageUrl = artist.images.get(0).url;
+        } else {
+            imageUrl = "";
         }
     }
 

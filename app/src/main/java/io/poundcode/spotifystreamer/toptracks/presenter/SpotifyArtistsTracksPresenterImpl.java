@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.poundcode.spotifystreamer.R;
+import io.poundcode.spotifystreamer.model.SpotifyTrack;
 import io.poundcode.spotifystreamer.spotifyapi.SpotifyServiceWrapper;
 import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksView;
 import kaaes.spotify.webapi.android.models.Tracks;
@@ -40,8 +41,9 @@ public class SpotifyArtistsTracksPresenterImpl implements SpotifyArtistsTracksPr
                 public void success(Tracks tracks, Response response) {
                     if (tracks.tracks.isEmpty()) {
                         mView.onEmptyResults();
+                        return;
                     }
-                    mView.render(tracks);
+                    mView.render(SpotifyTrack.createTrackListFromTracks(tracks));
                 }
 
                 @Override

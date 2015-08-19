@@ -8,22 +8,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyFragment;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
+import io.poundcode.spotifystreamer.model.SpotifyTrack;
 import io.poundcode.spotifystreamer.toptracks.SpotifyTracksPagerAdapter;
 import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPresenter;
 import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPresenterImpl;
-import kaaes.spotify.webapi.android.models.Track;
-import kaaes.spotify.webapi.android.models.Tracks;
 
 /**
  * Created by Atlas on 8/17/2015.
  */
 public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements SpotifyArtistsTopTracksView, ListItemClickListener {
+    private static final String RESULTS = "results";
     @InjectView(R.id.results)
     RecyclerView mTopTracksResultsRecyclerView;
     @InjectView(R.id.error)
@@ -31,7 +32,7 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
     private SpotifyArtistsTracksPresenter mPresenter;
     private String mArtist;
     private SpotifyTracksPagerAdapter mTracksPagerAdapter;
-    private ArrayList<Track> tracks;
+    private ArrayList<SpotifyTrack> tracks;
 
     public static SpotifyArtistsTopTracksFragment getInstance(String artist) {
         SpotifyArtistsTopTracksFragment fragment = new SpotifyArtistsTopTracksFragment();
@@ -40,13 +41,6 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
         fragment.setArguments(bundle);
         return fragment;
     }
-
-
-//    @Override
-//    public Object onRetainCustomNonConfigurationInstance() {
-//        return mTracksPagerAdapter.getData();
-//    }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -57,12 +51,22 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
         mTopTracksResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTracksPagerAdapter = new SpotifyTracksPagerAdapter(this);
         mTopTracksResultsRecyclerView.setAdapter(mTracksPagerAdapter);
-//        tracks = (ArrayList<Track>) getLastCustomNonConfigurationInstance();
+        if (savedInstanceState != null) {
+            tracks = savedInstanceState.getParcelableArrayList(RESULTS);
+        }
+
         if (tracks != null) {
             mTracksPagerAdapter.setResults(tracks);
         } else {
             mPresenter.loadTopTracks(mArtist);
         }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(RESULTS, mTracksPagerAdapter.getData());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -76,7 +80,7 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
     }
 
     @Override
-    public void render(final Tracks tracks) {
+    public void render(final List<SpotifyTrack> tracks) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -84,7 +88,7 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
                     mErrorMessage.setVisibility(View.GONE);
                     mTopTracksResultsRecyclerView.setVisibility(View.VISIBLE);
                 }
-                mTracksPagerAdapter.setResults(tracks.tracks);
+                mTracksPagerAdapter.setResults(tracks);
             }
         });
     }
