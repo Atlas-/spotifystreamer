@@ -11,5 +11,4 @@ public interface SpotifySearchView<T> {
     void onError(String message);
 
     void render(List<T> results);
-    boolean isAlive();
 }

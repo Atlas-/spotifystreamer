@@ -42,7 +42,6 @@ public class SpotifySearchFragment extends SpotifyFragment implements SpotifySea
     private SpotifyArtistSearchPresenterImpl mPresenter;
     private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
     private SearchView mSearchView;
-    private boolean isAlive = true;
 
     public static SpotifySearchFragment getInstance() {
         return new SpotifySearchFragment();
@@ -172,10 +171,4 @@ public class SpotifySearchFragment extends SpotifyFragment implements SpotifySea
         });
 
     }
-
-    @Override
-    public boolean isAlive() {
-        return isAlive;
-    }
-
 }
