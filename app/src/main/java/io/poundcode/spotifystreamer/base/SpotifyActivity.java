@@ -13,18 +13,22 @@ import io.poundcode.spotifystreamer.R;
 /**
  * Created by atlas on 6/10/15.
  */
-public abstract class SpotifyStreamActivity extends AppCompatActivity {
+public abstract class SpotifyActivity extends AppCompatActivity {
 
     @InjectView(R.id.toolbar)
     Toolbar mToolBar;
+    private boolean isLargeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutId());
-        ButterKnife.inject(this);
-        setTitle(getViewTitle());
-        setSupportActionBar(mToolBar);
+        if (getLayoutId() != 0) {
+            setContentView(getLayoutId());
+            ButterKnife.inject(this);
+            setTitle(getViewTitle());
+            setSupportActionBar(mToolBar);
+        }
+        isLargeLayout = (getResources().getBoolean(R.bool.isLargeLayout));
     }
 
     @Override
@@ -44,4 +48,8 @@ public abstract class SpotifyStreamActivity extends AppCompatActivity {
     public abstract int getLayoutId();
 
     public abstract String getViewTitle();
+
+    public boolean isLargeLayout() {
+        return isLargeLayout;
+    }
 }

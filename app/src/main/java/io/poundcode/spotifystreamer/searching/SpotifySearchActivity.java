@@ -1,4 +1,4 @@
-package io.poundcode.spotifystreamer.searching.view;
+package io.poundcode.spotifystreamer.searching;
 
 import android.app.SearchManager;
 import android.content.Intent;
@@ -6,24 +6,22 @@ import android.os.Bundle;
 
 import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
+import io.poundcode.spotifystreamer.base.SpotifyActivity;
 import io.poundcode.spotifystreamer.base.SpotifyFragment;
-import io.poundcode.spotifystreamer.base.SpotifyStreamActivity;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
-import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksActivity;
+import io.poundcode.spotifystreamer.searching.view.SpotifySearchView;
+import io.poundcode.spotifystreamer.toptracks.SpotifyArtistsTopTracksActivity;
 import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksFragment;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
-public class SpotifySearchActivity extends SpotifyStreamActivity implements ListItemClickListener {
+public class SpotifySearchActivity extends SpotifyActivity implements ListItemClickListener {
 
     private SpotifySearchView<ArtistsPager> mArtistSearchView;
-    private boolean isMultiPane = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SpotifyFragment searchView = (SpotifyFragment) getFragmentManager().findFragmentById(R.id.fragment_search);
-        if (findViewById(R.id.container) != null) {
-            isMultiPane = true;
-        }
+
         if (searchView instanceof SpotifySearchView) {
             mArtistSearchView = (SpotifySearchView<ArtistsPager>) searchView;
         }
@@ -57,7 +55,7 @@ public class SpotifySearchActivity extends SpotifyStreamActivity implements List
     @Override
     public void onItemClick(String artist) {
         //Load next view
-        if (isMultiPane) {
+        if (isLargeLayout()) {
             SpotifyArtistsTopTracksFragment fragment = SpotifyArtistsTopTracksFragment.getInstance(artist);
             getFragmentManager()
                 .beginTransaction()

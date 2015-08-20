@@ -23,6 +23,7 @@ import io.poundcode.spotifystreamer.base.SpotifyFragment;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
 import io.poundcode.spotifystreamer.model.SpotifyArtist;
 import io.poundcode.spotifystreamer.searching.SpotifyArtistPagerAdapter;
+import io.poundcode.spotifystreamer.searching.SpotifySearchActivity;
 import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenterImpl;
 
 /**
