@@ -10,7 +10,7 @@ import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 
 /**
- * Created by Atlas on 8/18/2015.
+ * Created by chris_pound on 8/18/2015.
  */
 public class SpotifyTrack implements Parcelable {
     public static final Creator<SpotifyTrack> CREATOR = new Creator<SpotifyTrack>() {
@@ -26,10 +26,10 @@ public class SpotifyTrack implements Parcelable {
     public String artistName;
     public String albumName;
     public String imageUrl;
+    public String trackPreviewUrl;
 
     public SpotifyTrack() {
     }
-
 
     public SpotifyTrack(Track track) {
         this.trackName = track.name;
@@ -40,6 +40,9 @@ public class SpotifyTrack implements Parcelable {
         } else {
             imageUrl = "";
         }
+        if (track.preview_url != null) {
+            this.trackPreviewUrl = track.preview_url;
+        }
     }
 
     protected SpotifyTrack(Parcel in) {
@@ -47,6 +50,7 @@ public class SpotifyTrack implements Parcelable {
         this.artistName = in.readString();
         this.albumName = in.readString();
         this.imageUrl = in.readString();
+        this.trackPreviewUrl = in.readString();
     }
 
     public static List<SpotifyTrack> createTrackListFromTracks(Tracks tracksToConvert) {
@@ -71,6 +75,8 @@ public class SpotifyTrack implements Parcelable {
         dest.writeString(this.artistName);
         dest.writeString(this.albumName);
         dest.writeString(this.imageUrl);
+        dest.writeString(this.trackPreviewUrl);
     }
+
 
 }

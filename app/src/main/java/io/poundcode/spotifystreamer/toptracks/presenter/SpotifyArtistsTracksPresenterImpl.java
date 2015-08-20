@@ -48,7 +48,7 @@ public class SpotifyArtistsTracksPresenterImpl implements SpotifyArtistsTracksPr
 
                 @Override
                 public void failure(RetrofitError error) {
-                    mView.onError(((Context) mView).getResources().getString(R.string.error_general));
+                    mView.onError(mContext.getResources().getString(R.string.error_general));
                 }
             });
         } else {

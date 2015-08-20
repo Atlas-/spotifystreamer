@@ -1,15 +1,16 @@
-package io.poundcode.spotifystreamer.toptracks.view;
+package io.poundcode.spotifystreamer.toptracks;
 
 import android.os.Bundle;
 
 import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
-import io.poundcode.spotifystreamer.base.SpotifyStreamActivity;
+import io.poundcode.spotifystreamer.base.SpotifyActivity;
+import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksFragment;
 
 /**
  * Created by Atlas on 6/16/2015.
  */
-public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity {
+public class SpotifyArtistsTopTracksActivity extends SpotifyActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,4 +33,5 @@ public class SpotifyArtistsTopTracksActivity extends SpotifyStreamActivity {
     public String getViewTitle() {
         return null;
     }
+
 }

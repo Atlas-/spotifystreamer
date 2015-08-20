@@ -1,6 +1,8 @@
 package io.poundcode.spotifystreamer.toptracks.view;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,8 +16,9 @@ import butterknife.InjectView;
 import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyFragment;
-import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
+import io.poundcode.spotifystreamer.listeners.TrackListItemClickListener;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
+import io.poundcode.spotifystreamer.player.SpotifyPlayerActivity;
 import io.poundcode.spotifystreamer.toptracks.SpotifyTracksPagerAdapter;
 import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPresenter;
 import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPresenterImpl;
@@ -23,7 +26,7 @@ import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPres
 /**
  * Created by Atlas on 8/17/2015.
  */
-public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements SpotifyArtistsTopTracksView, ListItemClickListener {
+public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements SpotifyArtistsTopTracksView, TrackListItemClickListener {
     private static final String RESULTS = "results";
     @InjectView(R.id.results)
     RecyclerView mTopTracksResultsRecyclerView;
@@ -32,7 +35,7 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
     private SpotifyArtistsTracksPresenter mPresenter;
     private String mArtist;
     private SpotifyTracksPagerAdapter mTracksPagerAdapter;
-    private ArrayList<SpotifyTrack> tracks;
+    private List<SpotifyTrack> tracks;
 
     public static SpotifyArtistsTopTracksFragment getInstance(String artist) {
         SpotifyArtistsTopTracksFragment fragment = new SpotifyArtistsTopTracksFragment();
@@ -84,6 +87,7 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                SpotifyArtistsTopTracksFragment.this.tracks = tracks;
                 if (mErrorMessage.getVisibility() == View.VISIBLE) {
                     mErrorMessage.setVisibility(View.GONE);
                     mTopTracksResultsRecyclerView.setVisibility(View.VISIBLE);
@@ -127,7 +131,10 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
     }
 
     @Override
-    public void onItemClick(String data) {
-        // TODO: 6/16/2015 load view play song.
+    public void onItemClick(int position) {
+        Intent intent = new Intent(getActivity(), SpotifyPlayerActivity.class);
+        intent.putParcelableArrayListExtra(Constants.TRACKS, (ArrayList<? extends Parcelable>) tracks);
+        intent.putExtra(Constants.SELECTED_TRACK, position);
+        startActivity(intent);
     }
 }

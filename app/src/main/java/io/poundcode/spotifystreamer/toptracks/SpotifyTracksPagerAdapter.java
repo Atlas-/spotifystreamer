@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.R;
-import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
+import io.poundcode.spotifystreamer.listeners.TrackListItemClickListener;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
 
 /**
@@ -25,10 +25,10 @@ import io.poundcode.spotifystreamer.model.SpotifyTrack;
  */
 public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTracksPagerAdapter.ViewHolder> {
 
-    private final ListItemClickListener listener;
+    private final TrackListItemClickListener listener;
     private ArrayList<SpotifyTrack> mResults = new ArrayList<>();
 
-    public SpotifyTracksPagerAdapter(ListItemClickListener listener) {
+    public SpotifyTracksPagerAdapter(TrackListItemClickListener listener) {
         this.listener = listener;
     }
 
@@ -86,12 +86,12 @@ public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTrack
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            String artist = this.track.getText().toString();
-            listener.onItemClick(artist);
+            listener.onItemClick(getAdapterPosition());
         }
     }
 }

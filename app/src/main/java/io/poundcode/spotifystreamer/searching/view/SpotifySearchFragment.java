@@ -23,6 +23,7 @@ import io.poundcode.spotifystreamer.base.SpotifyFragment;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
 import io.poundcode.spotifystreamer.model.SpotifyArtist;
 import io.poundcode.spotifystreamer.searching.SpotifyArtistPagerAdapter;
+import io.poundcode.spotifystreamer.searching.SpotifySearchActivity;
 import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenterImpl;
 
 /**
@@ -42,7 +43,6 @@ public class SpotifySearchFragment extends SpotifyFragment implements SpotifySea
     private SpotifyArtistSearchPresenterImpl mPresenter;
     private SpotifyArtistPagerAdapter mArtistsPagerAdapter;
     private SearchView mSearchView;
-    private boolean isAlive = true;
 
     public static SpotifySearchFragment getInstance() {
         return new SpotifySearchFragment();
@@ -172,10 +172,4 @@ public class SpotifySearchFragment extends SpotifyFragment implements SpotifySea
         });
 
     }
-
-    @Override
-    public boolean isAlive() {
-        return isAlive;
-    }
-
 }
