@@ -25,9 +25,9 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <activity
-            android:name=".player.SpotifyPlayerActivity"
+            android:name=".player.presenter.SpotifyPlayerActivity"
             android:label="@string/title_activity_spotify_player"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/AppTheme.Player">
         </activity>
         <activity
             android:name=".toptracks.SpotifyArtistsTopTracksActivity"
