@@ -2,7 +2,6 @@ package io.poundcode.spotifystreamer.searching;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +16,14 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.R;
+import io.poundcode.spotifystreamer.base.SelectableRecyclerView;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
 import io.poundcode.spotifystreamer.model.SpotifyArtist;
 
 /**
  * Created by Atlas on 6/14/2015.
  */
-// TODO: 6/16/2015 Make this generic for any spotify model?
-public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtistPagerAdapter.ViewHolder> {
+public class SpotifyArtistPagerAdapter extends SelectableRecyclerView<SpotifyArtistPagerAdapter.ViewHolder> {
 
     private final ListItemClickListener listener;
     private List<SpotifyArtist> mResults = new ArrayList<>();
@@ -43,6 +42,7 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+        super.onBindViewHolder(holder, position);
         SpotifyArtist artist = mResults.get(position);
         Context context = holder.artistImage.getContext();
         holder.artist.setText(artist.name);
@@ -79,7 +79,7 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends SelectableRecyclerView.SelectableViewHolderBase implements View.OnClickListener {
         @InjectView(R.id.artist_image)
         ImageView artistImage;
         @InjectView(R.id.artist)
@@ -93,6 +93,12 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
 
         @Override
         public void onClick(View v) {
+            if (v.getResources().getBoolean(R.bool.isLargeLayout)) {
+                int previous = mCurrentSelected;
+                mCurrentSelected = getAdapterPosition();
+                notifyItemChanged(mCurrentSelected);
+                notifyItemChanged(previous);
+            }
             String artist = mResults.get(getAdapterPosition()).id;
             listener.onItemClick(artist);
         }
