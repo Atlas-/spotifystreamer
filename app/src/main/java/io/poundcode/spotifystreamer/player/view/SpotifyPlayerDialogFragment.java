@@ -2,7 +2,6 @@ package io.poundcode.spotifystreamer.player.view;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -89,17 +88,10 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
     @Override
     public void updateIsPlaying(boolean isPaused) {
         if (isPaused) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mPlayPauseTrack.setBackground(getResources().getDrawable(R.drawable.ic_pause, null));
-            } else {
-                mPlayPauseTrack.setBackgroundResource(R.drawable.ic_pause);
-            }
+            mPlayPauseTrack.setImageResource(R.drawable.ic_pause);
+
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mPlayPauseTrack.setBackground(getResources().getDrawable(R.drawable.ic_play, null));
-            } else {
-                mPlayPauseTrack.setBackgroundResource(R.drawable.ic_play);
-            }
+            mPlayPauseTrack.setImageResource(R.drawable.ic_play);
         }
     }
 

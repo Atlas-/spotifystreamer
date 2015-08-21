@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--TODO get spotify color-->
     <color name="colorPrimary">#81b71a</color>
     <color name="colorPrimaryDark">#608913</color>
     <color name="colorAccentDark">#00686868</color>
