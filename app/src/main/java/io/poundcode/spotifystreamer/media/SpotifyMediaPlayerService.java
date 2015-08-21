@@ -16,6 +16,7 @@ import java.util.List;
 import io.poundcode.spotifystreamer.Actions;
 import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
+import io.poundcode.spotifystreamer.notifications.SpotifyNotificationManager;
 
 /**
  * Created by chris_pound on 8/19/2015.
@@ -122,6 +123,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
 
     private void autoPlayNextTrackInList() {
         SpotifyTrack track = mTrackList.get(mCurrentTrack);
+        SpotifyNotificationManager.buildPersistentTrackPlayingNotification(this, track);
         streamAudioFromUrl(track.trackPreviewUrl);
     }
 
@@ -129,6 +131,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         initMusicPlayer();
         mCurrentTrack = currentTrack;
         SpotifyTrack track = mTrackList.get(mCurrentTrack);
+        SpotifyNotificationManager.buildPersistentTrackPlayingNotification(this, track);
         streamAudioFromUrl(track.trackPreviewUrl);
     }
 
@@ -151,6 +154,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         super.onDestroy();
         destroyMediaPlayer();
         unregisterReceiver(broadcastReceiver);
+        SpotifyNotificationManager.destroyAllNotifications(this);
     }
 
     @Override

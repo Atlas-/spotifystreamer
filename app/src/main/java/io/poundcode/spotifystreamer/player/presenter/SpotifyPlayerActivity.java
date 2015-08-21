@@ -24,6 +24,7 @@ import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyActivity;
 import io.poundcode.spotifystreamer.media.SpotifyMediaPlayerService;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
+import io.poundcode.spotifystreamer.notifications.SpotifyNotificationManager;
 import io.poundcode.spotifystreamer.player.view.SpotifyPlayerDialogFragment;
 import io.poundcode.spotifystreamer.player.view.SpotifyPlayerView;
 import io.poundcode.spotifystreamer.utils.Utils;
@@ -122,6 +123,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         stopService(audioService);
         streamingAudioService = null;
         unregisterReceiver(mAudioStreamReceiver);
+        SpotifyNotificationManager.destroyAllNotifications(this);
     }
 
     @Override
