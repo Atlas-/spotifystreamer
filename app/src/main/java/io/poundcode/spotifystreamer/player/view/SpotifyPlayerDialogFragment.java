@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
 import io.poundcode.spotifystreamer.player.presenter.SpotifyPlayerPresenter;
@@ -26,7 +27,7 @@ import io.poundcode.spotifystreamer.player.presenter.SpotifyPlayerPresenter;
 /**
  * Created by chris_pound on 8/19/2015.
  */
-public class SpotifyPlayerDialogFragment extends DialogFragment implements SpotifyPlayerView {
+public class SpotifyPlayerDialogFragment extends DialogFragment implements SpotifyPlayerView, SeekBar.OnSeekBarChangeListener {
 
     @InjectView(R.id.track_image)
     ImageView mTrackImage;
@@ -38,9 +39,12 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
     SeekBar mSeekBar;
     @InjectView(R.id.play_pause_track)
     ImageButton mPlayPauseTrack;
+    @InjectView(R.id.trackTime)
+    TextView mTrackTime;
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
     private SpotifyPlayerPresenter mPresenter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_track_player, container, false);
@@ -48,6 +52,8 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
         if (getResources().getBoolean(R.bool.isLargeLayout)) {
             mToolbar.setVisibility(View.GONE);
         }
+        mSeekBar.setMax(Constants.SAMPLE_TRACK_LENGTH);
+        mSeekBar.setOnSeekBarChangeListener(this);
         return view;
     }
 
@@ -75,7 +81,9 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
             .into(mTrackImage);
         mArtistName.setText(track.artistName);
         mTrackName.setText(track.trackName);
+        mTrackTime.setText(":0");
         mToolbar.setTitle(track.trackName);
+        mSeekBar.setProgress(0);
     }
 
     @Override
@@ -97,7 +105,7 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
 
     @Override
     public void updateSeekBar(int position) {
-
+        mSeekBar.setProgress(position);
     }
 
     @Override
@@ -126,5 +134,24 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
     private void updateTitle(String song) {
         if (getActivity().getActionBar() != null)
             getActivity().setTitle(song);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        //do nothing
+        if (fromUser) {
+            mTrackTime.setText(":" + progress);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        //do nothing
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        int position = seekBar.getProgress();
+        mPresenter.seek(position);
     }
 }

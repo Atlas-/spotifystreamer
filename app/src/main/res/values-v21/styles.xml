@@ -6,5 +6,16 @@
         <item name="android:colorAccent">@color/colorAccentDark</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:dialogTheme">@style/AppTheme.Dialog</item>
     </style>
+
+    <style name="AppTheme.Dialog" parent="android:Theme.Material.Dialog">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccentDark</item>
+    </style>
+
+    <style name="AppTheme.Player" parent="AppTheme">
+    </style>
+
 </resources>

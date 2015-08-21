@@ -11,18 +11,22 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Messenger;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.poundcode.spotifystreamer.Actions;
 import io.poundcode.spotifystreamer.Constants;
+import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyActivity;
 import io.poundcode.spotifystreamer.media.SpotifyMediaPlayerService;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
 import io.poundcode.spotifystreamer.player.view.SpotifyPlayerDialogFragment;
 import io.poundcode.spotifystreamer.player.view.SpotifyPlayerView;
+import io.poundcode.spotifystreamer.utils.Utils;
 
 /**
  * Created by chris_pound on 8/19/2015.
@@ -33,6 +37,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     private int mCurrentTrackPosition;
     private SpotifyPlayerView spotifyPlayerView;
     private boolean mIsPaused = false;
+    private Messenger mMediaPlayerServiceMessenger;
     private boolean musicBound = false;
     private SpotifyMediaPlayerService streamingAudioService;
     private Intent audioService;
@@ -41,12 +46,14 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         public void onServiceConnected(ComponentName name, IBinder service) {
             SpotifyMediaPlayerService.MusicBinder binder = (SpotifyMediaPlayerService.MusicBinder) service;
             streamingAudioService = binder.getService();
+//            mMediaPlayerServiceMessenger = new Messenger(service);
             musicBound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             musicBound = false;
+            mMediaPlayerServiceMessenger = null;
         }
     };
     private BroadcastReceiver mAudioStreamReceiver = new BroadcastReceiver() {
@@ -57,6 +64,13 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
                     case Actions.NEXT_TRACK:
                         mCurrentTrackPosition = intent.getIntExtra(Constants.SELECTED_TRACK, -1);
                         spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
+                        break;
+                    case Actions.SEEK:
+                        int position = intent.getIntExtra(Actions.SEEK, 0);
+                        spotifyPlayerView.updateSeekBar(position);
+                        break;
+                    case Actions.ERROR:
+                        Toast.makeText(SpotifyPlayerActivity.this, "Error Playing Stream", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -101,11 +115,6 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(streamingAudioConnection);
@@ -132,6 +141,10 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
 
     @Override
     public void playPreviousTrack() {
+        if (!Utils.isNetworkConnected(this)) {
+            Toast.makeText(this, R.string.error_no_internet_connection, Toast.LENGTH_SHORT).show();
+            return;
+        }
         mCurrentTrackPosition--;
         if (mCurrentTrackPosition < 0) {
             mCurrentTrackPosition = mTracks.size() - 1;
@@ -142,6 +155,10 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
 
     @Override
     public void playNextTrack() {
+        if (!Utils.isNetworkConnected(this)) {
+            Toast.makeText(this, R.string.error_no_internet_connection, Toast.LENGTH_SHORT).show();
+            return;
+        }
         mCurrentTrackPosition++;
         if (mCurrentTrackPosition >= mTracks.size()) {
             mCurrentTrackPosition = 0;
@@ -152,6 +169,10 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
 
     @Override
     public void playOrPause() {
+        if (!Utils.isNetworkConnected(this)) {
+            Toast.makeText(this, R.string.error_no_internet_connection, Toast.LENGTH_SHORT).show();
+            return;
+        }
         mIsPaused = !mIsPaused;
         streamingAudioService.pauseTrack(mIsPaused);
         spotifyPlayerView.updateIsPlaying(mIsPaused);
@@ -159,8 +180,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
 
     @Override
     public void seek(int position) {
-        //todo update service.
-        spotifyPlayerView.updateSeekBar(position);
+        sendBroadcast(getSeekEventIntent(position));
     }
 
     private Intent getAudioServiceIntent() {
@@ -168,6 +188,13 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         intent.putParcelableArrayListExtra(Constants.TRACKS, (ArrayList<? extends Parcelable>) mTracks);
         intent.putExtra(Constants.SELECTED_TRACK, mCurrentTrackPosition);
         intent.setAction(Actions.PLAY_TRACK);
+        return intent;
+    }
+
+    private Intent getSeekEventIntent(int seekTo) {
+        Intent intent = new Intent(Actions.SEEK);
+        intent.putExtra(Constants.SEEK_TO, seekTo);
+        intent.setAction(Actions.SEEK);
         return intent;
     }
 

@@ -1,9 +1,13 @@
 package io.poundcode.spotifystreamer.media;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -16,21 +20,39 @@ import io.poundcode.spotifystreamer.model.SpotifyTrack;
 /**
  * Created by chris_pound on 8/19/2015.
  */
-public class SpotifyMediaPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener {
+public class SpotifyMediaPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     /**
      * currently just previews that end at 30seconds.
      */
     private static final int TRACK_LENGTH = 30;
     private final IBinder musicBind = new MusicBinder();
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mMediaPlayer;
     private List<SpotifyTrack> mTrackList;
     private int mCurrentTrack;
     private int mPauseTime;
+    private Handler mSeekbarHandler = new Handler();
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && intent.getAction() != null) {
+                if (intent.getAction().equals(Actions.SEEK)) {
+                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                        int seek = intent.getIntExtra(Constants.SEEK_TO, mMediaPlayer.getCurrentPosition());
+                        mMediaPlayer.seekTo(seek * 1000);
+                    }
+                }
+            }
+
+        }
+    };
 
     @Override
     public void onCreate() {
         super.onCreate();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Actions.SEEK);
+        registerReceiver(broadcastReceiver, filter);
     }
 
     @Override
@@ -38,22 +60,23 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         if (intent.getAction().equals(Actions.PLAY_TRACK)) {
             mTrackList = intent.getParcelableArrayListExtra(Constants.TRACKS);
             mCurrentTrack = intent.getIntExtra(Constants.SELECTED_TRACK, -1);
-            if (mediaPlayer == null) {
-                mediaPlayer = new MediaPlayer();
+            if (mMediaPlayer == null) {
+                mMediaPlayer = new MediaPlayer();
             }
-            if (!mediaPlayer.isPlaying()) {
+            if (!mMediaPlayer.isPlaying()) {
                 initMusicPlayer();
                 playTrack(mCurrentTrack);
             }
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     public void initMusicPlayer() {
         resetMediaPlayer();
-        mediaPlayer.setOnPreparedListener(this);
-        mediaPlayer.setOnCompletionListener(this);
-        mediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnPreparedListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
+        mMediaPlayer.setOnErrorListener(this);
+
     }
 
     @Override
@@ -63,37 +86,37 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
 
     @Override
     public boolean onUnbind(Intent intent) {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.start();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.start();
         }
         return false;
     }
 
     private void resetMediaPlayer() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
         }
-        mediaPlayer = new MediaPlayer();
+        mMediaPlayer = new MediaPlayer();
     }
 
     public void streamAudioFromUrl(String url) {
         try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepareAsync();
+            mMediaPlayer.setDataSource(url);
+            mMediaPlayer.prepareAsync();
         } catch (Exception e) {
             Log.e("Audio Streaming", e.toString());
         }
     }
 
     public void pauseTrack(boolean isPaused) {
-        if (isPaused && mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-            mPauseTime = mediaPlayer.getCurrentPosition();
-        } else if (!isPaused && mediaPlayer != null) {
-            mediaPlayer.seekTo(mPauseTime);
-            mediaPlayer.start();
+        if (isPaused && mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+            mMediaPlayer.pause();
+            mPauseTime = mMediaPlayer.getCurrentPosition();
+        } else if (!isPaused && mMediaPlayer != null) {
+            mMediaPlayer.seekTo(mPauseTime);
+            mMediaPlayer.start();
         }
     }
 
@@ -111,11 +134,17 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mediaPlayer.start();
+        mMediaPlayer.start();
+
+
     }
+
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+//        Intent intent = new Intent(Actions.ERROR);
+//        intent.setAction(Actions.SEEK);
+//        sendBroadcast(intent);
         return false;
     }
 
@@ -123,6 +152,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
     public void onDestroy() {
         super.onDestroy();
         destroyMediaPlayer();
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -139,9 +169,9 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
     }
 
     private void destroyMediaPlayer() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
         }
     }
 
@@ -152,9 +182,11 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         return intent;
     }
 
-    @Override
-    public void onSeekComplete(MediaPlayer mp) {
-        //notify seek bar
+    private Intent getSendSeekIntent(int currentPosition) {
+        Intent intent = new Intent(Actions.SEEK);
+        intent.setAction(Actions.SEEK);
+        intent.putExtra(Constants.SELECTED_TRACK, currentPosition);
+        return intent;
     }
 
     public class MusicBinder extends Binder {
@@ -162,4 +194,6 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
             return SpotifyMediaPlayerService.this;
         }
     }
+
+
 }
