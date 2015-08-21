@@ -106,6 +106,7 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
     @Override
     public void updateSeekBar(int position) {
         mSeekBar.setProgress(position);
+        mTrackTime.setText(":" + position);
     }
 
     @Override
@@ -131,14 +132,8 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
 
     }
 
-    private void updateTitle(String song) {
-        if (getActivity().getActionBar() != null)
-            getActivity().setTitle(song);
-    }
-
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        //do nothing
         if (fromUser) {
             mTrackTime.setText(":" + progress);
         }

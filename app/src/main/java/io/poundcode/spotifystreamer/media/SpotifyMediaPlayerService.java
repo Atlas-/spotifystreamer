@@ -135,10 +135,8 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
     @Override
     public void onPrepared(MediaPlayer mp) {
         mMediaPlayer.start();
-
-
+        getSeekUpdateRunnable().run();
     }
-
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -183,10 +181,24 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
     }
 
     private Intent getSendSeekIntent(int currentPosition) {
-        Intent intent = new Intent(Actions.SEEK);
-        intent.setAction(Actions.SEEK);
-        intent.putExtra(Constants.SELECTED_TRACK, currentPosition);
+        Intent intent = new Intent(Actions.SONG_PLAYING_SEEK);
+        intent.setAction(Actions.SONG_PLAYING_SEEK);
+        intent.putExtra(Constants.SEEK_TO, currentPosition);
         return intent;
+    }
+
+    private Runnable getSeekUpdateRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                    int currentPosition = mMediaPlayer.getCurrentPosition() / 1000;
+                    sendBroadcast(getSendSeekIntent(currentPosition));
+                }
+                mSeekbarHandler.postDelayed(this, 1000);
+            }
+
+        };
     }
 
     public class MusicBinder extends Binder {

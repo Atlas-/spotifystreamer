@@ -65,8 +65,8 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
                         mCurrentTrackPosition = intent.getIntExtra(Constants.SELECTED_TRACK, -1);
                         spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
                         break;
-                    case Actions.SEEK:
-                        int position = intent.getIntExtra(Actions.SEEK, 0);
+                    case Actions.SONG_PLAYING_SEEK:
+                        int position = intent.getIntExtra(Constants.SEEK_TO, 0);
                         spotifyPlayerView.updateSeekBar(position);
                         break;
                     case Actions.ERROR:
@@ -98,6 +98,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         }
         filter.addAction(Actions.NEXT_TRACK);
         filter.addAction(Actions.PREVIOUS_TRACK);
+        filter.addAction(Actions.SONG_PLAYING_SEEK);
     }
 
     @Override
