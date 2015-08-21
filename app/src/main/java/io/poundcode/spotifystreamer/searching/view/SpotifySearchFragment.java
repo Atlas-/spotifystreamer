@@ -37,6 +37,8 @@ public class SpotifySearchFragment extends SpotifyFragment implements SpotifySea
     RecyclerView mSearchResultsRecyclerView;
     @InjectView(R.id.error)
     TextView mErrorMessage;
+    @InjectView(R.id.help)
+    View help;
     ArrayList<SpotifyArtist> artists;
     String query;
     MenuItem mSearch;
@@ -115,7 +117,7 @@ public class SpotifySearchFragment extends SpotifyFragment implements SpotifySea
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_simple_list;
+        return R.layout.fragment_artist_search;
     }
 
     @Override
@@ -161,6 +163,7 @@ public class SpotifySearchFragment extends SpotifyFragment implements SpotifySea
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                help.setVisibility(View.GONE);
                 if (mErrorMessage.getVisibility() == View.VISIBLE) {
                     mErrorMessage.setVisibility(View.GONE);
                     mSearchResultsRecyclerView.setVisibility(View.VISIBLE);

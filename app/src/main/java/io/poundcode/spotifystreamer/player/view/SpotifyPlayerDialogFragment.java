@@ -2,6 +2,7 @@ package io.poundcode.spotifystreamer.player.view;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -68,7 +69,16 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
         return dialog;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (getActivity() != null && !getActivity().isFinishing()) {
+            getActivity().onBackPressed();
+        }
     }
 
     @Override
@@ -141,4 +151,6 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
         int position = seekBar.getProgress();
         mPresenter.seek(position);
     }
+
+
 }

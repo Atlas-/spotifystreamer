@@ -57,7 +57,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals(Actions.PLAY_TRACK)) {
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(Actions.PLAY_TRACK)) {
             mTrackList = intent.getParcelableArrayListExtra(Constants.TRACKS);
             mCurrentTrack = intent.getIntExtra(Constants.SELECTED_TRACK, -1);
             if (mMediaPlayer == null) {

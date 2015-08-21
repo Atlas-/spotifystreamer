@@ -125,6 +125,12 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
