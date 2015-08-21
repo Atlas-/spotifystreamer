@@ -37,11 +37,33 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null && intent.getAction() != null) {
-                if (intent.getAction().equals(Actions.SEEK)) {
-                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                        int seek = intent.getIntExtra(Constants.SEEK_TO, mMediaPlayer.getCurrentPosition());
-                        mMediaPlayer.seekTo(seek * 1000);
-                    }
+                switch (intent.getAction()) {
+                    case Actions.SEEK:
+                        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                            int seek = intent.getIntExtra(Constants.SEEK_TO, mMediaPlayer.getCurrentPosition());
+                            mMediaPlayer.seekTo(seek * 1000);
+                        }
+                        break;
+                    case Actions.PREVIOUS_TRACK:
+                        if (mCurrentTrack <= 0) {
+                            mCurrentTrack = mTrackList.size() - 1;
+                        } else {
+                            mCurrentTrack--;
+                        }
+                        playTrack(mCurrentTrack);
+                        break;
+                    case Actions.NEXT_TRACK:
+                        if (mCurrentTrack >= mTrackList.size()) {
+                            mCurrentTrack = 0;
+                        } else {
+                            mCurrentTrack++;
+                        }
+                        playTrack(mCurrentTrack);
+                        break;
+                    case Actions.PAUSE_PLAY_TRACK:
+                        boolean isPause = intent.getBooleanExtra(Constants.PLAY_PAUSE, false);
+                        pauseTrack(isPause);
+                        break;
                 }
             }
 
@@ -53,6 +75,9 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         super.onCreate();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Actions.SEEK);
+        filter.addAction(Actions.PREVIOUS_TRACK);
+        filter.addAction(Actions.NEXT_TRACK);
+        filter.addAction(Actions.PAUSE_PLAY_TRACK);
         registerReceiver(broadcastReceiver, filter);
     }
 
@@ -112,6 +137,8 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
     }
 
     public void pauseTrack(boolean isPaused) {
+        SpotifyTrack track = mTrackList.get(mCurrentTrack);
+        SpotifyNotificationManager.buildPersistentTrackPlayingNotification(this, track, !isPaused);
         if (isPaused && mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             mPauseTime = mMediaPlayer.getCurrentPosition();
@@ -119,11 +146,12 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
             mMediaPlayer.seekTo(mPauseTime);
             mMediaPlayer.start();
         }
+        sendBroadcast(getSendUpdatePlayPauseIntent());
     }
 
     private void autoPlayNextTrackInList() {
         SpotifyTrack track = mTrackList.get(mCurrentTrack);
-        SpotifyNotificationManager.buildPersistentTrackPlayingNotification(this, track);
+        SpotifyNotificationManager.buildPersistentTrackPlayingNotification(this, track, true);
         streamAudioFromUrl(track.trackPreviewUrl);
     }
 
@@ -131,8 +159,9 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         initMusicPlayer();
         mCurrentTrack = currentTrack;
         SpotifyTrack track = mTrackList.get(mCurrentTrack);
-        SpotifyNotificationManager.buildPersistentTrackPlayingNotification(this, track);
+        SpotifyNotificationManager.buildPersistentTrackPlayingNotification(this, track, true);
         streamAudioFromUrl(track.trackPreviewUrl);
+        sendBroadcast(getSendUpdateUiTrackIntent());
     }
 
     @Override
@@ -143,9 +172,9 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-//        Intent intent = new Intent(Actions.ERROR);
-//        intent.setAction(Actions.SEEK);
-//        sendBroadcast(intent);
+        Intent intent = new Intent(Actions.ERROR);
+        intent.setAction(Actions.SEEK);
+        sendBroadcast(intent);
         return false;
     }
 
@@ -165,7 +194,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
             destroyMediaPlayer();
             return;
         }
-        sendBroadcast(getSendNextTrackIntent());
+        sendBroadcast(getSendUpdateUiTrackIntent());
         initMusicPlayer();
         autoPlayNextTrackInList();
     }
@@ -177,9 +206,16 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         }
     }
 
-    private Intent getSendNextTrackIntent() {
-        Intent intent = new Intent(Actions.NEXT_TRACK);
-        intent.setAction(Actions.NEXT_TRACK);
+    private Intent getSendUpdateUiTrackIntent() {
+        Intent intent = new Intent(Actions.UPDATE_TRACK_UI);
+        intent.setAction(Actions.UPDATE_TRACK_UI);
+        intent.putExtra(Constants.SELECTED_TRACK, mCurrentTrack);
+        return intent;
+    }
+
+    private Intent getSendUpdatePlayPauseIntent() {
+        Intent intent = new Intent(Actions.UPDATE_PAUSE_UI);
+        intent.setAction(Actions.UPDATE_PAUSE_UI);
         intent.putExtra(Constants.SELECTED_TRACK, mCurrentTrack);
         return intent;
     }

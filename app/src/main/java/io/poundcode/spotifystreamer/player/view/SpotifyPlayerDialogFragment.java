@@ -99,7 +99,6 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
     public void updateIsPlaying(boolean isPaused) {
         if (isPaused) {
             mPlayPauseTrack.setImageResource(R.drawable.ic_pause);
-
         } else {
             mPlayPauseTrack.setImageResource(R.drawable.ic_play);
         }
