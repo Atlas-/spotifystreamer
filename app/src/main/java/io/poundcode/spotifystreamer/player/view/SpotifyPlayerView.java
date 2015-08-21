@@ -12,4 +12,13 @@ public interface SpotifyPlayerView {
     void updateIsPlaying(boolean isPlaying);
 
     void updateSeekBar(int position);
+
+    void onNextClicked();
+
+    void onPreviousClicked();
+
+    void onPausePlayClicked();
+
+    void onSeekStopped(int position);
+
 }

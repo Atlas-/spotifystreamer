@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar"/>
 
     <TextView
         android:id="@+id/track"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="TRACK"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
     <TextView
@@ -19,14 +20,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/track"
         android:layout_centerHorizontal="true"
-        android:text="Artist"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
     <ImageView
         android:id="@+id/track_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/seek_bar"
+        android:layout_above="@+id/trackTime"
         android:layout_below="@+id/artist"
         android:layout_margin="32dp"/>
 
@@ -63,5 +63,27 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dp"
         android:background="@drawable/ic_next"/>
+
+    <TextView
+        android:id="@+id/trackTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/seek_bar"
+        android:layout_alignLeft="@+id/previous_track"
+        android:layout_alignStart="@+id/previous_track"
+        android:text=":0"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <TextView
+        android:id="@+id/trackEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/seek_bar"
+        android:layout_alignEnd="@+id/next_track"
+        android:layout_alignRight="@+id/next_track"
+        android:text=":30"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/primary_dark_material_light"/>
 
 </RelativeLayout>
