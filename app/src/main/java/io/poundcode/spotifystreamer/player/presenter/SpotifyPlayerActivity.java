@@ -143,7 +143,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     @Override
     public void playNextTrack() {
         mCurrentTrackPosition++;
-        if (mCurrentTrackPosition > mTracks.size()) {
+        if (mCurrentTrackPosition >= mTracks.size()) {
             mCurrentTrackPosition = 0;
         }
         spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
