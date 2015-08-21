@@ -43,7 +43,7 @@ public class SpotifySearchActivity extends SpotifyActivity implements ListItemCl
 
     @Override
     public String getViewTitle() {
-        return null;
+        return getString(R.string.search_title);
     }
 
 

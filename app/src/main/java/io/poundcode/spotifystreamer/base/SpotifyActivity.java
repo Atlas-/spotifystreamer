@@ -25,8 +25,8 @@ public abstract class SpotifyActivity extends AppCompatActivity {
         if (getLayoutId() != 0) {
             setContentView(getLayoutId());
             ButterKnife.inject(this);
-            setTitle(getViewTitle());
             setSupportActionBar(mToolBar);
+            setTitle(getViewTitle());
         }
         isLargeLayout = (getResources().getBoolean(R.bool.isLargeLayout));
     }

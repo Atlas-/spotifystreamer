@@ -25,8 +25,7 @@
     <ImageView
         android:id="@+id/track_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/trackTime"
+        android:layout_height="350dp"
         android:layout_below="@+id/artist"
         android:layout_margin="32dp"/>
 
@@ -34,7 +33,7 @@
         android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/play_pause_track"/>
+        android:layout_below="@+id/track_image"/>
 
     <ImageButton
         android:id="@+id/previous_track"
@@ -53,7 +52,7 @@
         android:id="@+id/play_pause_track"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/seek_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:background="@drawable/previous_selector"
@@ -63,7 +62,6 @@
         android:id="@+id/next_track"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/seek_bar"

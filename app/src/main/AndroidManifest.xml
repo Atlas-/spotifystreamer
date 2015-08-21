@@ -30,6 +30,7 @@
             android:name=".player.presenter.SpotifyPlayerActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_spotify_player"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.Player">
         </activity>
         <activity

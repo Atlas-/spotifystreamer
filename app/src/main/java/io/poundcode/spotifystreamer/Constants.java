@@ -13,10 +13,7 @@ public class Constants {
     public static final String[] COUNTRY_SUPPORT = {"AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "IE", "IS", "IT", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "RO", "SE", "SG", "SI", "SK", "SV", "TR", "TW", "US", "UY"};
     public static final Set<String> COUNTRY_SUPPORT_SET = new HashSet<>(Arrays.asList(COUNTRY_SUPPORT));
     public static final String SELECTED_TRACK = "selected_track";
-    public static final int REGISTER_MSG_CLIENT = 101;
-    public static final int UNREGISTER_MSG_CLIENT = 102;
-    public static final String SEND_SEEK_EVENT = "send_seek_event";
     public static final int SAMPLE_TRACK_LENGTH = 30;
     public static final String SEEK_TO = "seek_to";
-    public static final String RECEIVE_SEEK_EVENT = "receive_seek_event";
+    public static final String PLAY_PAUSE = "play_pause";
 }
