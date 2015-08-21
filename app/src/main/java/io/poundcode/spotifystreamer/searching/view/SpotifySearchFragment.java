@@ -82,7 +82,7 @@ public class SpotifySearchFragment extends SpotifyFragment implements SpotifySea
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setIconifiedByDefault(true);
         mSearchView.setIconified(true);
-        if (artists != null) {
+        if (artists != null && !artists.isEmpty()) {
             mArtistsPagerAdapter.setResults(artists);
             help.setVisibility(View.GONE);
         }
