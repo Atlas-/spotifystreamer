@@ -28,6 +28,7 @@ public class SpotifyArtistPagerAdapter extends RecyclerView.Adapter<SpotifyArtis
 
     private final ListItemClickListener listener;
     private List<SpotifyArtist> mResults = new ArrayList<>();
+    private int current;
 
     public SpotifyArtistPagerAdapter(ListItemClickListener listener) {
         this.listener = listener;
