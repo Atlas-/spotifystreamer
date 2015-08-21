@@ -12,7 +12,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +55,8 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
             if (intent != null && intent.getAction() != null) {
                 switch (intent.getAction()) {
                     case Actions.NEXT_TRACK:
-                        Log.d("next track", "got next track event");
+                        mCurrentTrackPosition = intent.getIntExtra(Constants.SELECTED_TRACK, -1);
+                        spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
                         break;
                 }
             }
@@ -82,6 +82,8 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
             transaction.add(android.R.id.content, spotifyPlayerDialogFragment)
                 .addToBackStack(null).commit();
         }
+        filter.addAction(Actions.NEXT_TRACK);
+        filter.addAction(Actions.PREVIOUS_TRACK);
     }
 
     @Override
@@ -89,15 +91,12 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         super.onStart();
         bindService(audioService, streamingAudioConnection, Context.BIND_AUTO_CREATE);
         startService(audioService);
+        registerReceiver(mAudioStreamReceiver, filter);
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        filter.addAction(Actions.NEXT_TRACK);
-        filter.addAction(Actions.PREVIOUS_TRACK);
-        registerReceiver(mAudioStreamReceiver, filter);
         spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
     }
 
@@ -129,6 +128,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     public String getViewTitle() {
         return null;
     }
+
 
     @Override
     public void playPreviousTrack() {

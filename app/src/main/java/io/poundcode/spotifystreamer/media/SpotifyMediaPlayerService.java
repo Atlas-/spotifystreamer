@@ -31,16 +31,20 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
     @Override
     public void onCreate() {
         super.onCreate();
-        initMusicPlayer();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equals(Actions.PLAY_TRACK)) {
-            initMusicPlayer();
             mTrackList = intent.getParcelableArrayListExtra(Constants.TRACKS);
             mCurrentTrack = intent.getIntExtra(Constants.SELECTED_TRACK, -1);
-            playTrack(mCurrentTrack);
+            if (mediaPlayer == null) {
+                mediaPlayer = new MediaPlayer();
+            }
+            if (!mediaPlayer.isPlaying()) {
+                initMusicPlayer();
+                playTrack(mCurrentTrack);
+            }
         }
         return super.onStartCommand(intent, flags, startId);
     }
