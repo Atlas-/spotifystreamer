@@ -2,14 +2,19 @@ package io.poundcode.spotifystreamer.player.view;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,19 +29,25 @@ import io.poundcode.spotifystreamer.player.presenter.SpotifyPlayerPresenter;
 public class SpotifyPlayerDialogFragment extends DialogFragment implements SpotifyPlayerView {
 
     @InjectView(R.id.track_image)
-    ImageView trackImage;
+    ImageView mTrackImage;
     @InjectView(R.id.track)
-    TextView track;
+    TextView mTrackName;
     @InjectView(R.id.artist)
-    TextView artist;
+    TextView mArtistName;
     @InjectView(R.id.seek_bar)
-    SeekBar seekBar;
+    SeekBar mSeekBar;
+    @InjectView(R.id.play_pause_track)
+    ImageButton mPlayPauseTrack;
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
     private SpotifyPlayerPresenter mPresenter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_track_player, container, false);
         ButterKnife.inject(this, view);
+        if (getResources().getBoolean(R.bool.isLargeLayout)) {
+            mToolbar.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -57,12 +68,31 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
 
     @Override
     public void updateTrackPlaying(SpotifyTrack track) {
-
+        Picasso.with(getActivity())
+            .load(track.getTrackImageUrlAsUri())
+            .placeholder(R.drawable.spotify_logo)
+            .error(R.drawable.spotify_logo)
+            .into(mTrackImage);
+        mArtistName.setText(track.artistName);
+        mTrackName.setText(track.trackName);
+        mToolbar.setTitle(track.trackName);
     }
 
     @Override
-    public void updateIsPlaying(boolean isPlaying) {
-
+    public void updateIsPlaying(boolean isPaused) {
+        if (isPaused) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mPlayPauseTrack.setBackground(getResources().getDrawable(R.drawable.ic_pause, null));
+            } else {
+                mPlayPauseTrack.setBackgroundResource(R.drawable.ic_pause);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mPlayPauseTrack.setBackground(getResources().getDrawable(R.drawable.ic_play, null));
+            } else {
+                mPlayPauseTrack.setBackgroundResource(R.drawable.ic_play);
+            }
+        }
     }
 
     @Override
@@ -91,5 +121,10 @@ public class SpotifyPlayerDialogFragment extends DialogFragment implements Spoti
     @Override
     public void onSeekStopped(int position) {
 
+    }
+
+    private void updateTitle(String song) {
+        if (getActivity().getActionBar() != null)
+            getActivity().setTitle(song);
     }
 }

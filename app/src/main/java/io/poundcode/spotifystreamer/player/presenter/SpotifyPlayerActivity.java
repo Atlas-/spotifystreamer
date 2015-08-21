@@ -30,8 +30,8 @@ import io.poundcode.spotifystreamer.player.view.SpotifyPlayerView;
  */
 public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPlayerPresenter {
 
-    private List<SpotifyTrack> tracks;
-    private int currentTrackPosition;
+    private List<SpotifyTrack> mTracks;
+    private int mCurrentTrackPosition;
     private SpotifyPlayerView spotifyPlayerView;
     private boolean mIsPaused = false;
     private boolean musicBound = false;
@@ -68,13 +68,12 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tracks = getIntent().getExtras().getParcelableArrayList(Constants.TRACKS);
-        currentTrackPosition = getIntent().getExtras().getInt(Constants.SELECTED_TRACK, -1);
+        mTracks = getIntent().getExtras().getParcelableArrayList(Constants.TRACKS);
+        mCurrentTrackPosition = getIntent().getExtras().getInt(Constants.SELECTED_TRACK, -1);
         audioService = getAudioServiceIntent();
         FragmentManager fragmentManager = getFragmentManager();
         SpotifyPlayerDialogFragment spotifyPlayerDialogFragment = new SpotifyPlayerDialogFragment();
         spotifyPlayerView = spotifyPlayerDialogFragment;
-
         if (isLargeLayout()) {
             spotifyPlayerDialogFragment.show(fragmentManager, "player");
         } else {
@@ -99,6 +98,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         filter.addAction(Actions.NEXT_TRACK);
         filter.addAction(Actions.PREVIOUS_TRACK);
         registerReceiver(mAudioStreamReceiver, filter);
+        spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
     }
 
     @Override
@@ -130,29 +130,24 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         return null;
     }
 
-    private void updateTitle(String song) {
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(song);
-    }
-
     @Override
     public void playPreviousTrack() {
-        currentTrackPosition--;
-        if (currentTrackPosition < 0) {
-            currentTrackPosition = tracks.size() - 1;
+        mCurrentTrackPosition--;
+        if (mCurrentTrackPosition < 0) {
+            mCurrentTrackPosition = mTracks.size() - 1;
         }
-        spotifyPlayerView.updateTrackPlaying(null);
-        streamingAudioService.playTrack(currentTrackPosition);
+        spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
+        streamingAudioService.playTrack(mCurrentTrackPosition);
     }
 
     @Override
     public void playNextTrack() {
-        currentTrackPosition++;
-        if (currentTrackPosition > tracks.size()) {
-            currentTrackPosition = 0;
+        mCurrentTrackPosition++;
+        if (mCurrentTrackPosition > mTracks.size()) {
+            mCurrentTrackPosition = 0;
         }
-        spotifyPlayerView.updateTrackPlaying(null);
-        streamingAudioService.playTrack(currentTrackPosition);
+        spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
+        streamingAudioService.playTrack(mCurrentTrackPosition);
     }
 
     @Override
@@ -170,8 +165,8 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
 
     private Intent getAudioServiceIntent() {
         Intent intent = new Intent(this, SpotifyMediaPlayerService.class);
-        intent.putParcelableArrayListExtra(Constants.TRACKS, (ArrayList<? extends Parcelable>) tracks);
-        intent.putExtra(Constants.SELECTED_TRACK, currentTrackPosition);
+        intent.putParcelableArrayListExtra(Constants.TRACKS, (ArrayList<? extends Parcelable>) mTracks);
+        intent.putExtra(Constants.SELECTED_TRACK, mCurrentTrackPosition);
         intent.setAction(Actions.PLAY_TRACK);
         return intent;
     }

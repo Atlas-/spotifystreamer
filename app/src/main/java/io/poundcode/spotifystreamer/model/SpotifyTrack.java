@@ -66,6 +66,9 @@ public class SpotifyTrack implements Parcelable {
     }
 
     public Uri getTrackImageUrlAsUri() {
+        if (imageUrl == null) {
+            imageUrl = "";
+        }
         return Uri.parse(this.imageUrl);
     }
 
