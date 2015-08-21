@@ -18,7 +18,7 @@ import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyFragment;
 import io.poundcode.spotifystreamer.listeners.TrackListItemClickListener;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
-import io.poundcode.spotifystreamer.player.SpotifyPlayerActivity;
+import io.poundcode.spotifystreamer.player.presenter.SpotifyPlayerActivity;
 import io.poundcode.spotifystreamer.toptracks.SpotifyTracksPagerAdapter;
 import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPresenter;
 import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPresenterImpl;

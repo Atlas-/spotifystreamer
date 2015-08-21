@@ -1,5 +1,6 @@
 package io.poundcode.spotifystreamer.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -62,6 +63,10 @@ public class SpotifyTrack implements Parcelable {
             tracks.add(new SpotifyTrack(tracksToConvert.tracks.get(i)));
         }
         return tracks;
+    }
+
+    public Uri getTrackImageUrlAsUri() {
+        return Uri.parse(this.imageUrl);
     }
 
     @Override
