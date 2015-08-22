@@ -39,7 +39,7 @@ public class SpotifyArtistsTracksPresenterImpl implements SpotifyArtistsTracksPr
             SpotifyServiceWrapper.getNewService().getArtistTopTrack(artist, params, new Callback<Tracks>() {
                 @Override
                 public void success(Tracks tracks, Response response) {
-                    if (tracks.tracks.isEmpty()) {
+                    if (tracks == null || tracks.tracks == null || tracks.tracks.isEmpty()) {
                         mView.onEmptyResults();
                         return;
                     }
