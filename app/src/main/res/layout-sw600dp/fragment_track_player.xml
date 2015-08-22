@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
     <TextView
         android:id="@+id/track"
@@ -27,13 +27,14 @@
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:layout_below="@+id/artist"
-        android:layout_margin="32dp"/>
+        android:layout_margin="32dp"
+        android:layout_above="@+id/seek_bar" />
 
     <SeekBar
         android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/track_image"/>
+        android:layout_above="@+id/next_track" />
 
     <ImageButton
         android:id="@+id/previous_track"
@@ -41,22 +42,22 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/seek_bar"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/previous_selector"
-        android:src="@drawable/ic_previous"/>
+        android:src="@drawable/ic_previous"
+        android:layout_alignParentBottom="true" />
 
     <ImageButton
         android:id="@+id/play_pause_track"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/seek_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:background="@drawable/previous_selector"
-        android:src="@drawable/ic_play"/>
+        android:src="@drawable/ic_play"
+        android:layout_alignParentBottom="true" />
 
     <ImageButton
         android:id="@+id/next_track"
@@ -64,12 +65,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/seek_bar"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:background="@drawable/previous_selector"
-        android:src="@drawable/ic_next"/>
+        android:src="@drawable/ic_next"
+        android:layout_alignParentBottom="true" />
 
     <TextView
         android:id="@+id/trackTime"
