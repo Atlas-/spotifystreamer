@@ -116,11 +116,14 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
             @Override
             public void run() {
                 Toast.makeText(getActivity(), getResources().getString(R.string.no_top_tracks), Toast.LENGTH_SHORT).show();
-                if (mErrorMessage.getVisibility() == View.VISIBLE) {
-                    mErrorMessage.setVisibility(View.GONE);
-                    mTopTracksResultsRecyclerView.setVisibility(View.VISIBLE);
+                if (mErrorMessage.getVisibility() != View.VISIBLE) {
+                    mErrorMessage.setVisibility(View.VISIBLE);
+                    mTopTracksResultsRecyclerView.setVisibility(View.GONE);
+                    mErrorMessage.setText(getString(R.string.no_top_tracks));
                 }
-                getActivity().finish();
+                if (!getResources().getBoolean(R.bool.isLargeLayout)) {
+                    getActivity().finish();
+                }
             }
         });
     }
