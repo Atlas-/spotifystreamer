@@ -122,7 +122,19 @@ public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements 
                     mErrorMessage.setText(getString(R.string.no_top_tracks));
                 }
                 if (!getResources().getBoolean(R.bool.isLargeLayout)) {
-                    getActivity().finish();
+                    Thread thread = new Thread(){
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1500);
+                                if( !SpotifyArtistsTopTracksFragment.this.getActivity().isFinishing())
+                                SpotifyArtistsTopTracksFragment.this.getActivity().finish();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    thread.start();
                 }
             }
         });

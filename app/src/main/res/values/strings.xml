@@ -15,4 +15,5 @@
     <string name="no_top_tracks">No top tracks found for this artist.</string>
     <string name="audio_service">Audio Service</string>
     <string name="search_help">Select the search icon and look up an artist.</string>
+    <string name="error_no_results">No top tracks found for this artist</string>
 </resources>
