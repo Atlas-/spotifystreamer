@@ -16,9 +16,6 @@ import retrofit.client.Response;
 
 import static io.poundcode.spotifystreamer.utils.Utils.isNetworkConnected;
 
-/**
- * Created by Atlas on 6/16/2015.
- */
 public class SpotifyArtistsTracksPresenterImpl implements SpotifyArtistsTracksPresenter {
 
     public static final String COUNTRY = "country";

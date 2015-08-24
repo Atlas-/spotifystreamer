@@ -10,9 +10,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import io.poundcode.spotifystreamer.R;
 
-/**
- * Created by atlas on 6/10/15.
- */
 public abstract class SpotifyActivity extends AppCompatActivity {
 
     @InjectView(R.id.toolbar)

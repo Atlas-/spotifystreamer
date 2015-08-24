@@ -4,9 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by Atlas on 6/16/2015.
- */
 public class Constants {
     public static final String ARTIST = "artist";
     public static final String TRACKS = "tracks";

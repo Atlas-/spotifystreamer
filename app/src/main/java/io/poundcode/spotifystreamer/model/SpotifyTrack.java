@@ -10,9 +10,6 @@ import java.util.List;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 
-/**
- * Created by chris_pound on 8/18/2015.
- */
 public class SpotifyTrack implements Parcelable {
     public static final Creator<SpotifyTrack> CREATOR = new Creator<SpotifyTrack>() {
         public SpotifyTrack createFromParcel(Parcel source) {

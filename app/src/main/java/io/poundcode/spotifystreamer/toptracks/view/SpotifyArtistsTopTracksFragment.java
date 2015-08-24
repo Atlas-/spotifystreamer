@@ -23,9 +23,6 @@ import io.poundcode.spotifystreamer.toptracks.SpotifyTracksPagerAdapter;
 import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPresenter;
 import io.poundcode.spotifystreamer.toptracks.presenter.SpotifyArtistsTracksPresenterImpl;
 
-/**
- * Created by Atlas on 8/17/2015.
- */
 public class SpotifyArtistsTopTracksFragment extends SpotifyFragment implements SpotifyArtistsTopTracksView, TrackListItemClickListener {
     private static final String RESULTS = "results";
     @InjectView(R.id.results)

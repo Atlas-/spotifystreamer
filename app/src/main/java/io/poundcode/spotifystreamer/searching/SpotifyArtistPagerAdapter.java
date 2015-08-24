@@ -20,14 +20,10 @@ import io.poundcode.spotifystreamer.base.SelectableRecyclerView;
 import io.poundcode.spotifystreamer.listeners.ListItemClickListener;
 import io.poundcode.spotifystreamer.model.SpotifyArtist;
 
-/**
- * Created by Atlas on 6/14/2015.
- */
 public class SpotifyArtistPagerAdapter extends SelectableRecyclerView<SpotifyArtistPagerAdapter.ViewHolder> {
 
     private final ListItemClickListener listener;
     private List<SpotifyArtist> mResults = new ArrayList<>();
-    private int current;
 
     public SpotifyArtistPagerAdapter(ListItemClickListener listener) {
         this.listener = listener;

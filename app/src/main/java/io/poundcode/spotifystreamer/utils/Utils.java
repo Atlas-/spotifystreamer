@@ -6,10 +6,6 @@ import android.net.NetworkInfo;
 
 import io.poundcode.spotifystreamer.Constants;
 
-
-/**
- * Created by Atlas on 6/30/2015.
- */
 public class Utils {
 
     private static final String LOG_TAG = Utils.class.getSimpleName();

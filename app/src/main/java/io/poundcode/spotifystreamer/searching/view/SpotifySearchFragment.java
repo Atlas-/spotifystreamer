@@ -26,9 +26,6 @@ import io.poundcode.spotifystreamer.searching.SpotifyArtistPagerAdapter;
 import io.poundcode.spotifystreamer.searching.SpotifySearchActivity;
 import io.poundcode.spotifystreamer.searching.presenter.SpotifyArtistSearchPresenterImpl;
 
-/**
- * Created by Atlas on 8/17/2015.
- */
 public class SpotifySearchFragment extends SpotifyFragment implements SpotifySearchView<SpotifyArtist>, SearchView.OnQueryTextListener {
 
     private static final String QUERY = "query";

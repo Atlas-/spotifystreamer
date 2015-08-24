@@ -9,9 +9,6 @@ import java.util.List;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
-/**
- * Created by Atlas on 8/18/2015.
- */
 public class SpotifyArtist implements Parcelable {
 
     public static final Creator<SpotifyArtist> CREATOR = new Creator<SpotifyArtist>() {

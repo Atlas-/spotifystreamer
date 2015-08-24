@@ -7,9 +7,6 @@ import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.base.SpotifyActivity;
 import io.poundcode.spotifystreamer.toptracks.view.SpotifyArtistsTopTracksFragment;
 
-/**
- * Created by Atlas on 6/16/2015.
- */
 public class SpotifyArtistsTopTracksActivity extends SpotifyActivity {
 
     @Override

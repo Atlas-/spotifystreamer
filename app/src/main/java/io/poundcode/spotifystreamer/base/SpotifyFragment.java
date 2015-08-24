@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 
-/**
- * Created by Atlas on 8/17/2015.
- */
 public abstract class SpotifyFragment extends Fragment {
 
     @Override

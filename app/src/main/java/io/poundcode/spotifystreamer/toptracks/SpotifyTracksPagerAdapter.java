@@ -20,9 +20,6 @@ import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.listeners.TrackListItemClickListener;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
 
-/**
- * Created by Atlas on 6/16/2015.
- */
 public class SpotifyTracksPagerAdapter extends RecyclerView.Adapter<SpotifyTracksPagerAdapter.ViewHolder> {
 
     private final TrackListItemClickListener listener;

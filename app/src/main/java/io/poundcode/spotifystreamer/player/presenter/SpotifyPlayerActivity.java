@@ -29,9 +29,6 @@ import io.poundcode.spotifystreamer.player.view.SpotifyPlayerDialogFragment;
 import io.poundcode.spotifystreamer.player.view.SpotifyPlayerView;
 import io.poundcode.spotifystreamer.utils.Utils;
 
-/**
- * Created by chris_pound on 8/19/2015.
- */
 public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPlayerPresenter {
 
     private List<SpotifyTrack> mTracks;

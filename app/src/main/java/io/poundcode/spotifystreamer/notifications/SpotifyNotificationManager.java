@@ -18,9 +18,6 @@ import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
 import io.poundcode.spotifystreamer.player.presenter.SpotifyPlayerActivity;
 
-/**
- * Created by chris_pound on 8/21/2015.
- */
 public class SpotifyNotificationManager {
 
     public static final int PREVIOUS_ID = 0;

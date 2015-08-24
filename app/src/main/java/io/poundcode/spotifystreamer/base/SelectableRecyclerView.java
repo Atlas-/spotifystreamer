@@ -5,9 +5,6 @@ import android.view.View;
 
 import io.poundcode.spotifystreamer.R;
 
-/**
- * Created by chris_pound on 8/21/2015.
- */
 public abstract class SelectableRecyclerView<T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T> {
     public int mCurrentSelected = -1;
 

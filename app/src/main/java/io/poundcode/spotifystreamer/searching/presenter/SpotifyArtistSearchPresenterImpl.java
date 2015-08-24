@@ -13,9 +13,6 @@ import retrofit.client.Response;
 
 import static io.poundcode.spotifystreamer.utils.Utils.isNetworkConnected;
 
-/**
- * Created by Atlas on 6/11/2015.
- */
 public class SpotifyArtistSearchPresenterImpl implements SpotifySearchPresenter {
 
     public boolean isSearching = false;

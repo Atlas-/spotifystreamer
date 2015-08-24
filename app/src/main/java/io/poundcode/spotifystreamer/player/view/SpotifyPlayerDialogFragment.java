@@ -24,9 +24,6 @@ import io.poundcode.spotifystreamer.R;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
 import io.poundcode.spotifystreamer.player.presenter.SpotifyPlayerPresenter;
 
-/**
- * Created by chris_pound on 8/19/2015.
- */
 public class SpotifyPlayerDialogFragment extends DialogFragment implements SpotifyPlayerView, SeekBar.OnSeekBarChangeListener {
 
     @InjectView(R.id.track_image)

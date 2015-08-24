@@ -18,9 +18,7 @@ import io.poundcode.spotifystreamer.Constants;
 import io.poundcode.spotifystreamer.model.SpotifyTrack;
 import io.poundcode.spotifystreamer.notifications.SpotifyNotificationManager;
 
-/**
- * Created by chris_pound on 8/19/2015.
- */
+
 public class SpotifyMediaPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
     /**
