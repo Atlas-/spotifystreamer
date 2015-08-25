@@ -35,7 +35,6 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     private SpotifyPlayerView spotifyPlayerView;
     private boolean mIsPaused = false;
     private SpotifyMediaPlayerService streamingAudioService;
-    private Intent audioService;
     private ServiceConnection streamingAudioConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -84,7 +83,6 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         }
         mTracks = getIntent().getExtras().getParcelableArrayList(Constants.TRACKS);
         mCurrentTrackPosition = getIntent().getExtras().getInt(Constants.SELECTED_TRACK, -1);
-        audioService = getAudioServiceIntent();
         FragmentManager fragmentManager = getFragmentManager();
         SpotifyPlayerDialogFragment spotifyPlayerDialogFragment = new SpotifyPlayerDialogFragment();
         spotifyPlayerView = spotifyPlayerDialogFragment;
@@ -105,6 +103,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     @Override
     public void onStart() {
         super.onStart();
+        Intent audioService = getAudioServiceIntent();
         if (!musicBound) {
             getApplicationContext().bindService(audioService, streamingAudioConnection, Context.BIND_AUTO_CREATE);
             spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
@@ -136,6 +135,12 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (musicBound) {
+            getApplicationContext().unbindService(streamingAudioConnection);
+        }
+        if (SpotifyMediaPlayerService.isAlive) {
+            getApplicationContext().stopService(getAudioServiceIntent());
+        }
         finish();
     }
 

@@ -97,7 +97,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
         return START_STICKY;
     }
 
-    public void initMusicPlayer() {
+    private void initMusicPlayer() {
         resetMediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnCompletionListener(this);
@@ -112,10 +112,6 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
 
     @Override
     public boolean onUnbind(Intent intent) {
-        if (mMediaPlayer != null) {
-            mMediaPlayer.stop();
-            mMediaPlayer.start();
-        }
         return false;
     }
 
