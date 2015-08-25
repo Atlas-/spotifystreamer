@@ -8,10 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Messenger;
 import android.os.Parcelable;
 import android.widget.Toast;
 
@@ -31,12 +29,11 @@ import io.poundcode.spotifystreamer.utils.Utils;
 
 public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPlayerPresenter {
 
+    private static boolean musicBound = false;
     private List<SpotifyTrack> mTracks;
     private int mCurrentTrackPosition;
     private SpotifyPlayerView spotifyPlayerView;
     private boolean mIsPaused = false;
-    private Messenger mMediaPlayerServiceMessenger;
-    private boolean musicBound = false;
     private SpotifyMediaPlayerService streamingAudioService;
     private Intent audioService;
     private ServiceConnection streamingAudioConnection = new ServiceConnection() {
@@ -50,7 +47,6 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
         @Override
         public void onServiceDisconnected(ComponentName name) {
             musicBound = false;
-            mMediaPlayerServiceMessenger = null;
         }
     };
     private BroadcastReceiver mAudioStreamReceiver = new BroadcastReceiver() {
@@ -82,6 +78,10 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null && getLastCustomNonConfigurationInstance() != null) {
+            streamingAudioConnection = (ServiceConnection) getLastCustomNonConfigurationInstance();
+            getApplicationContext().bindService(getAudioServiceIntent(), streamingAudioConnection, Context.BIND_AUTO_CREATE);
+        }
         mTracks = getIntent().getExtras().getParcelableArrayList(Constants.TRACKS);
         mCurrentTrackPosition = getIntent().getExtras().getInt(Constants.SELECTED_TRACK, -1);
         audioService = getAudioServiceIntent();
@@ -106,32 +106,37 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     public void onStart() {
         super.onStart();
         if (!musicBound) {
-            bindService(audioService, streamingAudioConnection, Context.BIND_AUTO_CREATE);
-            startService(audioService);
-            registerReceiver(mAudioStreamReceiver, filter);
+            getApplicationContext().bindService(audioService, streamingAudioConnection, Context.BIND_AUTO_CREATE);
             spotifyPlayerView.updateTrackPlaying(mTracks.get(mCurrentTrackPosition));
         }
+        if (!SpotifyMediaPlayerService.isAlive) {
+            getApplicationContext().startService(audioService);
+        }
+            registerReceiver(mAudioStreamReceiver, filter);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(streamingAudioConnection);
-        stopService(audioService);
+        if (musicBound) {
+            getApplicationContext().unbindService(streamingAudioConnection);
+        }
         streamingAudioService = null;
         unregisterReceiver(mAudioStreamReceiver);
         SpotifyNotificationManager.destroyAllNotifications(this);
     }
 
     @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return streamingAudioConnection;
+    }
+
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -189,7 +194,7 @@ public class SpotifyPlayerActivity extends SpotifyActivity implements SpotifyPla
     }
 
     private Intent getAudioServiceIntent() {
-        Intent intent = new Intent(this, SpotifyMediaPlayerService.class);
+        Intent intent = new Intent(getApplicationContext(), SpotifyMediaPlayerService.class);
         intent.putParcelableArrayListExtra(Constants.TRACKS, (ArrayList<? extends Parcelable>) mTracks);
         intent.putExtra(Constants.SELECTED_TRACK, mCurrentTrackPosition);
         intent.setAction(Actions.PLAY_TRACK);

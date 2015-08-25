@@ -25,6 +25,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
      * currently just previews that end at 30seconds.
      */
     private static final int TRACK_LENGTH = 30;
+    public static boolean isAlive = false;
     private final IBinder musicBind = new MusicBinder();
     private MediaPlayer mMediaPlayer;
     private List<SpotifyTrack> mTrackList;
@@ -81,6 +82,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        isAlive = true;
         if (intent != null && intent.getAction() != null && intent.getAction().equals(Actions.PLAY_TRACK)) {
             mTrackList = intent.getParcelableArrayListExtra(Constants.TRACKS);
             mCurrentTrack = intent.getIntExtra(Constants.SELECTED_TRACK, -1);
@@ -179,6 +181,7 @@ public class SpotifyMediaPlayerService extends Service implements MediaPlayer.On
     @Override
     public void onDestroy() {
         super.onDestroy();
+        isAlive = false;
         destroyMediaPlayer();
         unregisterReceiver(broadcastReceiver);
         SpotifyNotificationManager.destroyAllNotifications(this);
